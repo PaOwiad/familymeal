@@ -4443,7 +4443,7 @@ async function connectFamily() {
 
   try {
     // Create family if not exists
-    await sb.upsert('fm_families', { code, name: 'Familie' });
+    await sb.upsert('familymeal.fm_families', { code, name: 'Familie' });
 
     // Push current local state to cloud
     await pushAllToSupabase();
