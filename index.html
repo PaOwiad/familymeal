@@ -4429,21 +4429,18 @@ const sb = {
   subscribe(table, familyCode, callback) {
     // Poll every 3 seconds for changes from OTHER devices
     return setInterval(async () => {
-      if (isSyncing) return; // skip while we're pushing
+      if (isSyncing) return;
       try {
-        const since = new Date(syncLastPush - 1000).toISOString();
+        // Only look for rows updated after our last push + 2 second buffer
+        const since = new Date(syncLastPush + 2000).toISOString();
         const rows = await sb.get(table,
           'family_code=eq.' + encodeURIComponent(familyCode) +
-          '&updated_at=gt.' + since +
+          '&updated_at=gt.' + encodeURIComponent(since) +
           '&order=updated_at.desc'
         );
         if (rows && rows.length > 0) {
-          // Only apply rows that are newer than our last push (from other device)
-          const fresh = rows.filter(r => new Date(r.updated_at) > new Date(syncLastPush + 500));
-          if (fresh.length > 0) {
-            syncLastPush = Date.now();
-            fresh.forEach(r => callback(r));
-          }
+          rows.forEach(r => callback(r));
+          showToast('🔄 Aktualisiert von anderem Gerät', 1500);
         }
       } catch(e) {}
     }, 3000);
@@ -4471,11 +4468,11 @@ async function connectFamily() {
     const existing = await sb.get('fm_state', 'family_code=eq.' + code);
 
     if (existing && existing.length > 0) {
-      // Family exists — pull cloud data (other device already set up)
+      // Family exists in cloud — pull only, never overwrite cloud with local
       await pullFromSupabase();
-      showToast('✅ Willkommen zurück! Daten geladen.');
+      showToast('✅ Daten von Familie ' + code + ' geladen');
     } else {
-      // New family — push local data to cloud
+      // Brand new family — push local as starting point
       await pushAllToSupabase();
       showToast('✅ Neue Familie erstellt: ' + code);
     }
@@ -4578,25 +4575,34 @@ async function pullFromSupabase() {
 }
 
 function applySupabaseRow(row) {
+  // Only apply if this row is newer than our last push
+  // This prevents our own pushed data from bouncing back
+  const rowTime = new Date(row.updated_at).getTime();
+  if (rowTime <= syncLastPush && syncLastPush > 0) return;
+
   switch(row.key) {
     case 'persons':
       persons = row.value;
       lsSave('fm_persons', persons);
       renderPersons();
-      renderWeek(); // update person count in week stats
+      renderWeek();
       break;
-    case 'weekplan':     weekPlan = row.value; renderWeek(); break;
-    case 'snackplan':    snackPlan = row.value; break;
-    case 'mealpersons':  mealPersons = row.value; break;
-    case 'aktionen':     aktionen = row.value; renderAktionen(); break;
-    case 'settings':     settings = {...settings, ...row.value}; break;
-    case 'shopchecked':  shoppingChecked = row.value; renderShoppingList(); renderLaden(); break;
-    case 'weekoffset':   currentWeekOffset = row.value; renderWeek(); break;
-    case 'userrecipes':  userRecipes = row.value; renderRecipes(); break;
-    case 'vorrat':       vorrat = row.value; break;
+    case 'weekplan':
+      weekPlan = row.value;
+      lsSave('fm_weekplan', weekPlan);
+      renderWeek();
+      generateShoppingList();
+      renderLaden();
+      break;
+    case 'snackplan':    snackPlan = row.value; lsSave('fm_snackplan', snackPlan); break;
+    case 'mealpersons':  mealPersons = row.value; lsSave('fm_mealpersons', mealPersons); break;
+    case 'aktionen':     aktionen = row.value; lsSave('fm_aktionen', aktionen); renderAktionen(); break;
+    case 'settings':     settings = {...settings, ...row.value}; lsSave('fm_settings', settings); break;
+    case 'shopchecked':  shoppingChecked = row.value; lsSave('fm_shopchecked', shoppingChecked); renderShoppingList(); renderLaden(); break;
+    case 'weekoffset':   currentWeekOffset = row.value; lsSave('fm_weekoffset', currentWeekOffset); renderWeek(); break;
+    case 'userrecipes':  userRecipes = row.value; lsSave('fm_userrecipes', userRecipes); renderRecipes(); break;
+    case 'vorrat':       vorrat = row.value; lsSave('fm_vorrat', vorrat); break;
   }
-  // Also save locally
-  lsSave('fm_' + row.key, row.value);
 }
 
 // Override saveAllState to also sync to Supabase
