@@ -4631,9 +4631,28 @@ async function manualSync() {
 // =====================================================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {
-      // No sw.js on file:// — ignore
-    });
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      // Auto-update: when new SW is found, reload page automatically
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version available — reload silently
+            newSW.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      });
+      // If SW took control, reload to get fresh content
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+      // Check for updates every 60 seconds
+      setInterval(() => reg.update(), 60000);
+    }).catch(() => {});
   });
 }
 
