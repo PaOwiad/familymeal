@@ -953,9 +953,11 @@
 <header class="app-header">
   <div class="app-logo">Family<span>Meal</span><span class="save-dot" id="saveDot"></span></div>
   <div style="display:flex;align-items:center;gap:8px">
-    <div style="display:flex;align-items:center;gap:5px;cursor:pointer" onclick="showTab('einstellungen')" title="Sync Status">
-      <div id="syncDotHeader" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.3)"></div>
-      <span id="syncLabelHeader" style="font-size:11px;color:rgba(255,255,255,0.5)">offline</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;align-items:center;gap:4px;cursor:pointer" onclick="manualSync()" title="Sync">
+        <div id="syncDotHeader" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.3)"></div>
+        <span id="syncLabelHeader" style="font-size:11px;color:rgba(255,255,255,0.5)">offline</span>
+      </div>
     </div>
     <div class="header-week" id="headerWeek"></div>
   </div>
@@ -4394,6 +4396,7 @@ let familyCode = '';
 let supabaseClient = null;
 let syncChannel = null;
 let isSyncing = false;
+let syncLastPush = 0; // timestamp of our last push
 
 // Simple Supabase REST client (no SDK needed)
 const sb = {
@@ -4424,17 +4427,26 @@ const sb = {
     return r.status === 204 ? {} : r.json();
   },
   subscribe(table, familyCode, callback) {
-    // Polling fallback (2 sec) — Realtime via WebSocket optional
-    let lastCheck = Date.now();
+    // Poll every 3 seconds for changes from OTHER devices
     return setInterval(async () => {
+      if (isSyncing) return; // skip while we're pushing
       try {
-        const rows = await sb.get(table, 'family_code=eq.' + familyCode + '&updated_at=gt.' + new Date(lastCheck - 500).toISOString());
+        const since = new Date(syncLastPush - 1000).toISOString();
+        const rows = await sb.get(table,
+          'family_code=eq.' + encodeURIComponent(familyCode) +
+          '&updated_at=gt.' + since +
+          '&order=updated_at.desc'
+        );
         if (rows && rows.length > 0) {
-          lastCheck = Date.now();
-          rows.forEach(r => callback(r));
+          // Only apply rows that are newer than our last push (from other device)
+          const fresh = rows.filter(r => new Date(r.updated_at) > new Date(syncLastPush + 500));
+          if (fresh.length > 0) {
+            syncLastPush = Date.now();
+            fresh.forEach(r => callback(r));
+          }
         }
       } catch(e) {}
-    }, 2500);
+    }, 3000);
   }
 };
 
@@ -4546,6 +4558,7 @@ async function pushAllToSupabase() {
     } catch(e) { console.warn('Push failed for key:', key, e.message); }
   }
   isSyncing = false;
+  syncLastPush = Date.now();
 }
 
 async function pullFromSupabase() {
@@ -4566,7 +4579,12 @@ async function pullFromSupabase() {
 
 function applySupabaseRow(row) {
   switch(row.key) {
-    case 'persons':      persons = row.value; renderPersons(); break;
+    case 'persons':
+      persons = row.value;
+      lsSave('fm_persons', persons);
+      renderPersons();
+      renderWeek(); // update person count in week stats
+      break;
     case 'weekplan':     weekPlan = row.value; renderWeek(); break;
     case 'snackplan':    snackPlan = row.value; break;
     case 'mealpersons':  mealPersons = row.value; break;
@@ -4588,6 +4606,23 @@ function saveAllState() {
   if (familyCode && !isSyncing) {
     setSyncStatus('syncing');
     pushAllToSupabase().then(() => setSyncStatus('connected')).catch(() => setSyncStatus('error'));
+  }
+}
+
+// Manual sync — pull latest from cloud
+async function manualSync() {
+  if (!familyCode) {
+    showToast('Kein Familien-Code — Einstellungen öffnen');
+    return;
+  }
+  setSyncStatus('syncing');
+  try {
+    await pullFromSupabase();
+    setSyncStatus('connected');
+    showToast('🔄 Synchronisiert');
+  } catch(e) {
+    setSyncStatus('error');
+    showToast('❌ Sync fehlgeschlagen');
   }
 }
 
