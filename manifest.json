@@ -2,7 +2,7 @@
   "name": "FamilyMeal Planner",
   "short_name": "FamilyMeal",
   "description": "Schweizer Familienküche — Wochenplaner, Einkauf & Rezepte",
-  "start_url": "/",
+  "start_url": "/familymeal",
   "display": "standalone",
   "background_color": "#f7f4ef",
   "theme_color": "#1a1714",
