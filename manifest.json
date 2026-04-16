@@ -1,0 +1,26 @@
+{
+  "name": "FamilyMeal Planner",
+  "short_name": "FamilyMeal",
+  "description": "Schweizer Familienküche — Wochenplaner, Einkauf & Rezepte",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f4ef",
+  "theme_color": "#1a1714",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='38' fill='%231a1714'/><text y='.85em' font-size='140' x='20'>🍽️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%231a1714'/><text y='.85em' font-size='380' x='50'>🍽️</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle", "utilities"],
+  "lang": "de-CH"
+}

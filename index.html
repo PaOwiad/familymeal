@@ -2,8 +2,14 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>FamilyMeal Planner</title>
+<meta name="theme-color" content="#1a1714">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FamilyMeal">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1714'/><text y='.9em' font-size='80' x='10'>🍽️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1252,6 +1258,43 @@
         <label class="check-item"><input type="checkbox" id="shopLidl" checked onchange="saveSettings()"> 🔵 Lidl</label>
         <label class="check-item"><input type="checkbox" id="shopAldi" onchange="saveSettings()"> 🔷 Aldi</label>
         <label class="check-item"><input type="checkbox" id="shopSpar" onchange="saveSettings()"> 🟢 Spar</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👨‍👩‍👧 Familie & Sync</div>
+      <div id="syncStatusBar" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;display:flex;align-items:center;gap:8px">
+        <span id="syncDot" style="width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0"></span>
+        <span id="syncStatusText">Nicht verbunden — Daten nur lokal</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Familien-Code (selbst wählen, alle Geräte gleich)</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="form-control" id="settFamilyCode" placeholder="z.B. MUELLER24" maxlength="12" style="flex:1;text-transform:uppercase;letter-spacing:2px;font-weight:700;font-size:16px">
+          <button class="btn btn-primary" onclick="connectFamily()">Verbinden</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">Alle Familienmitglieder denselben Code → Echtzeit-Sync auf allen Geräten</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🤖 Claude API</div>
+      <div class="form-group">
+        <label class="form-label">API Key (für KI-Vorschläge & Rezept-Import)</label>
+        <div style="display:flex;gap:8px">
+          <input type="password" class="form-control" id="settApiKey" placeholder="sk-ant-..." style="flex:1">
+          <button class="btn btn-primary" onclick="saveApiKey()">Speichern</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:4px">Wird nur lokal gespeichert · <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">Key erstellen →</a></div>
+      </div>
+      <div id="apiKeyStatus" style="font-size:13px;margin-top:4px"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🖨️ Export & Druck</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="printWeekPlan()">🖨️ Wochenplan drucken</button>
+        <button class="btn btn-secondary" onclick="printShoppingList()">🖨️ Einkaufsliste drucken</button>
       </div>
     </div>
 
@@ -4332,9 +4375,219 @@ async function scanManualSearch() {
   }
 }
 
+
+// =====================================================
+// SUPABASE CONFIG
+// =====================================================
+const SUPABASE_URL = 'https://tazphkvsdfqcneogeqhm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_njt7sJhM2zrGdcp22G1lGQ_hgWUwdOz';
+
+let familyCode = '';
+let supabaseClient = null;
+let syncChannel = null;
+let isSyncing = false;
+
+// Simple Supabase REST client (no SDK needed)
+const sb = {
+  async get(table, filter) {
+    const params = filter ? '?' + filter : '';
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + params, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  },
+  async upsert(table, data) {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.status === 204 ? {} : r.json();
+  },
+  subscribe(table, familyCode, callback) {
+    // Polling fallback (2 sec) — Realtime via WebSocket optional
+    let lastCheck = Date.now();
+    return setInterval(async () => {
+      try {
+        const rows = await sb.get(table, 'family_code=eq.' + familyCode + '&updated_at=gt.' + new Date(lastCheck - 500).toISOString());
+        if (rows && rows.length > 0) {
+          lastCheck = Date.now();
+          rows.forEach(r => callback(r));
+        }
+      } catch(e) {}
+    }, 2500);
+  }
+};
+
+// =====================================================
+// FAMILY SYNC
+// =====================================================
+async function connectFamily() {
+  const code = (document.getElementById('settFamilyCode').value || '').trim().toUpperCase();
+  if (code.length < 4) { showToast('Mindestens 4 Zeichen'); return; }
+
+  familyCode = code;
+  lsSave('fm_family_code', code);
+  setSyncStatus('connecting');
+
+  try {
+    // Create family if not exists
+    await sb.upsert('fm_families', { code, name: 'Familie' });
+
+    // Push current local state to cloud
+    await pushAllToSupabase();
+
+    // Pull latest from cloud (overrides local)
+    await pullFromSupabase();
+
+    setSyncStatus('connected');
+    showToast('✅ Verbunden als Familie ' + code);
+
+    // Start polling for changes
+    if (syncChannel) clearInterval(syncChannel);
+    syncChannel = sb.subscribe('fm_state', code, (row) => {
+      if (isSyncing) return;
+      applySupabaseRow(row);
+    });
+
+  } catch(e) {
+    setSyncStatus('error');
+    showToast('❌ Verbindung fehlgeschlagen: ' + e.message);
+  }
+}
+
+function setSyncStatus(state) {
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncStatusText');
+  if (!dot || !text) return;
+  const states = {
+    connected:   { color: 'var(--green)',  msg: '✅ Verbunden · Familien-Code: ' + familyCode },
+    connecting:  { color: 'var(--yellow)', msg: '⏳ Verbinde...' },
+    syncing:     { color: 'var(--yellow)', msg: '🔄 Synchronisiere...' },
+    error:       { color: 'var(--red)',    msg: '❌ Verbindungsfehler' },
+    offline:     { color: 'var(--border)', msg: 'Nicht verbunden — Daten nur lokal' }
+  };
+  const s = states[state] || states.offline;
+  dot.style.background = s.color;
+  text.textContent = s.msg;
+}
+
+async function pushAllToSupabase() {
+  if (!familyCode) return;
+  isSyncing = true;
+  const keys = [
+    ['persons', persons],
+    ['weekplan', weekPlan],
+    ['snackplan', snackPlan],
+    ['mealpersons', mealPersons],
+    ['aktionen', aktionen],
+    ['settings', settings],
+    ['shopchecked', shoppingChecked],
+    ['weekoffset', currentWeekOffset],
+    ['userrecipes', userRecipes],
+    ['vorrat', vorrat],
+  ];
+  for (const [key, val] of keys) {
+    await sb.upsert('fm_state', {
+      family_code: familyCode,
+      key,
+      value: val,
+      updated_at: new Date().toISOString()
+    });
+  }
+  isSyncing = false;
+}
+
+async function pullFromSupabase() {
+  if (!familyCode) return;
+  const rows = await sb.get('fm_state', 'family_code=eq.' + familyCode);
+  if (!rows || rows.length === 0) return;
+  rows.forEach(r => applySupabaseRow(r));
+  // Re-render after full pull
+  renderWeek();
+  generateShoppingList();
+  renderLaden();
+  renderPersons();
+  renderAktionen();
+  renderRecipes();
+  renderBasis();
+  showToast('🔄 Daten synchronisiert');
+}
+
+function applySupabaseRow(row) {
+  switch(row.key) {
+    case 'persons':      persons = row.value; renderPersons(); break;
+    case 'weekplan':     weekPlan = row.value; renderWeek(); break;
+    case 'snackplan':    snackPlan = row.value; break;
+    case 'mealpersons':  mealPersons = row.value; break;
+    case 'aktionen':     aktionen = row.value; renderAktionen(); break;
+    case 'settings':     settings = {...settings, ...row.value}; break;
+    case 'shopchecked':  shoppingChecked = row.value; renderShoppingList(); renderLaden(); break;
+    case 'weekoffset':   currentWeekOffset = row.value; renderWeek(); break;
+    case 'userrecipes':  userRecipes = row.value; renderRecipes(); break;
+    case 'vorrat':       vorrat = row.value; break;
+  }
+  // Also save locally
+  lsSave('fm_' + row.key, row.value);
+}
+
+// Override saveAllState to also sync to Supabase
+const _origSaveAllState = saveAllState;
+function saveAllState() {
+  _origSaveAllState();
+  if (familyCode && !isSyncing) {
+    setSyncStatus('syncing');
+    pushAllToSupabase().then(() => setSyncStatus('connected')).catch(() => setSyncStatus('error'));
+  }
+}
+
+// =====================================================
+// PWA SERVICE WORKER REGISTRATION
+// =====================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      // No sw.js on file:// — ignore
+    });
+  });
+}
+
 function init() {
   // Load persisted state
   loadAllState();
+
+  // Restore family code and reconnect
+  const savedCode = lsLoad('fm_family_code', '');
+  if (savedCode) {
+    familyCode = savedCode;
+    const el = document.getElementById('settFamilyCode');
+    if (el) el.value = savedCode;
+    setSyncStatus('connecting');
+    // Auto reconnect
+    sb.upsert('fm_families', { code: savedCode, name: 'Familie' })
+      .then(() => pullFromSupabase())
+      .then(() => {
+        setSyncStatus('connected');
+        if (syncChannel) clearInterval(syncChannel);
+        syncChannel = sb.subscribe('fm_state', savedCode, (row) => {
+          if (!isSyncing) applySupabaseRow(row);
+        });
+      })
+      .catch(() => setSyncStatus('offline'));
+  } else {
+    setSyncStatus('offline');
+  }
 
   // Apply saved settings to UI controls
   document.getElementById('settBudget').value = settings.budget;
