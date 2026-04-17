@@ -4475,7 +4475,7 @@ const sb = {
         );
         if (rows && rows.length > 0) {
           rows.forEach(r => callback(r));
-          showToast('🔄 Aktualisiert von anderem Gerät', 1500);
+          flashSyncDot('var(--blue)'); // silent indicator
         }
       } catch(e) {}
     }, 3000);
