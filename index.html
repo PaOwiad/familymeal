@@ -892,13 +892,13 @@ const sb={
     return r.json();
   },
   async upsert(table,data){
-    const r=await fetch(SUPABASE_URL+'/rest/v1/'+table,{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/'+table+'?on_conflict=family_code,key',{
       method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
       body:JSON.stringify(data)
     });
     if(!r.ok) throw new Error(await r.text());
-    return r.status===204?{}:r.json();
+    return r.status===204?{}:(r.headers.get('content-length')==='0'?{}:r.json());
   }
 };
 
