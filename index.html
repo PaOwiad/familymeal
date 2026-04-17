@@ -983,11 +983,11 @@ async function connectFamily(){
   familyCode=code; lsSave('fm_family_code',code);
   if(el) el.value=code; setSyncStatus('connecting');
   try{
-    await fetch(SUPABASE_URL+'/rest/v1/fm_families',{
+    await fetch(SUPABASE_URL+'/rest/v1/fm_families?on_conflict=code',{
       method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=ignore-duplicates'},
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
       body:JSON.stringify({code,name:'Familie '+code})
-    });
+    }).catch(()=>{}); // Familie existiert bereits — OK
     const existing=await sb.get('fm_state','family_code=eq.'+encodeURIComponent(code));
     if(existing&&existing.length>0){
       await pullFromSupabase(); showToast('✅ Daten von Familie '+code+' geladen');
@@ -1032,11 +1032,13 @@ function autoReconnect(){
   if(el) el.value=savedCode;
   setSyncStatus('connecting');
   // Pull silently — reRenderAll() am Ende aktualisiert die UI
-  fetch(SUPABASE_URL+'/rest/v1/fm_families',{
+  // Familie anlegen oder ignorieren falls schon existiert
+  fetch(SUPABASE_URL+'/rest/v1/fm_families?on_conflict=code',{
     method:'POST',
-    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=ignore-duplicates'},
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
     body:JSON.stringify({code:savedCode,name:'Familie '+savedCode})
   })
+  .catch(()=>{}) // 409 ignorieren
   .then(()=>pullFromSupabase())
   .then(()=>{ setSyncStatus('connected'); startPolling(); })
   .catch(()=>{ setSyncStatus('offline'); });
