@@ -4123,25 +4123,51 @@ function closeScanner() {
 }
 
 async function startCamera() {
+  const hintEl = document.getElementById('scannerHint');
+
+  // Check if getUserMedia is available at all
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    hintEl.textContent = '📷 Kamera nicht verfügbar — bitte EAN manuell eingeben';
+    return;
+  }
+
   try {
     scannerStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+      video: { facingMode: { ideal: 'environment' } }
     });
     const video = document.getElementById('scannerVideo');
     video.srcObject = scannerStream;
-    await video.play();
 
-    // Try BarcodeDetector API (Chrome/Edge/Android)
+    // iOS requires explicit play after srcObject set
+    try { await video.play(); } catch(playErr) {}
+
+    hintEl.textContent = 'Kamera aktiv — Barcode in Rahmen halten';
+
+    // Try BarcodeDetector API (Chrome/Android/Edge)
     if ('BarcodeDetector' in window) {
-      scannerDetector = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e'] });
-      scannerInterval = setInterval(detectBarcodeNative, 300);
-      document.getElementById('scannerHint').textContent = 'Automatische Erkennung aktiv…';
+      try {
+        scannerDetector = new BarcodeDetector({
+          formats: ['ean_13','ean_8','code_128','code_39','upc_a','upc_e']
+        });
+        scannerInterval = setInterval(detectBarcodeNative, 400);
+        hintEl.textContent = '✅ Automatische Erkennung aktiv';
+      } catch(bdErr) {
+        loadZXing();
+      }
     } else {
-      // Fallback: load ZXing from CDN
       loadZXing();
     }
   } catch(e) {
-    document.getElementById('scannerHint').textContent = '❌ Kamerazugriff verweigert — bitte manuell suchen';
+    // Camera denied or not available
+    const msg = e.name === 'NotAllowedError'
+      ? '🔒 Kamerazugriff verweigert — Einstellungen → Safari/Chrome → Kamera erlauben'
+      : e.name === 'NotFoundError'
+      ? '📷 Keine Kamera gefunden'
+      : '📷 Kamera nicht verfügbar';
+    hintEl.textContent = msg;
+    // Show manual input prominently
+    const manual = document.getElementById('scanManualInput');
+    if (manual) { manual.focus(); manual.placeholder = 'EAN-Nummer oder Produktname eingeben…'; }
   }
 }
 
@@ -4619,9 +4645,19 @@ const _origSaveAllState = saveAllState;
 function saveAllState() {
   _origSaveAllState();
   if (familyCode && !isSyncing) {
-    setSyncStatus('syncing');
-    pushAllToSupabase().then(() => setSyncStatus('connected')).catch(() => setSyncStatus('error'));
+    // Push silently — only flash dot, no status text change
+    pushAllToSupabase()
+      .then(() => flashSyncDot('var(--green)'))
+      .catch(() => flashSyncDot('var(--red)'));
   }
+}
+
+function flashSyncDot(color) {
+  const dot = document.getElementById('syncDotHeader');
+  if (!dot) return;
+  const orig = dot.style.background;
+  dot.style.background = color;
+  setTimeout(() => { dot.style.background = orig; }, 600);
 }
 
 // Manual sync — pull latest from cloud
@@ -4630,13 +4666,14 @@ async function manualSync() {
     showToast('Kein Familien-Code — Einstellungen öffnen');
     return;
   }
-  setSyncStatus('syncing');
+  const dot = document.getElementById('syncDotHeader');
+  if (dot) dot.style.background = 'var(--yellow)';
   try {
     await pullFromSupabase();
-    setSyncStatus('connected');
+    if (dot) dot.style.background = 'var(--green)';
     showToast('🔄 Synchronisiert');
   } catch(e) {
-    setSyncStatus('error');
+    if (dot) dot.style.background = 'var(--red)';
     showToast('❌ Sync fehlgeschlagen');
   }
 }
