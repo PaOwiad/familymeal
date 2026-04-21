@@ -4633,12 +4633,12 @@ async function connectFamily() {
   try {
     await sbCreateFamily(code);
     const hasData = await loadFromSupabase(code);
+    // Always push current state to cloud after connecting
+    await pushAll();
     if (!hasData) {
-      // New family — push local data
-      await pushAll();
       showToast('✅ Neue Familie ' + code + ' erstellt');
     } else {
-      showToast('✅ Familie ' + code + ' verbunden & geladen');
+      showToast('✅ Familie ' + code + ' verbunden & synchronisiert');
     }
     setSyncStatus('connected');
     startPolling();
