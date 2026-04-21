@@ -4427,84 +4427,137 @@ async function scanManualSearch() {
 const SUPABASE_URL = 'https://tazphkvsdfqcneogeqhm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_njt7sJhM2zrGdcp22G1lGQ_hgWUwdOz';
 
-// =====================================================
-// DEVICE ID — unique per browser/device, never changes
-// =====================================================
-let deviceId = lsLoad('fm_device_id', null);
-if (!deviceId) {
-  deviceId = 'dev_' + Math.random().toString(36).slice(2, 10);
-  lsSave('fm_device_id', deviceId);
-}
-
 let familyCode = '';
 let syncChannel = null;
 let isSyncing = false;
-// Track which keys we changed locally so we don't overwrite them from cloud
-const localChanges = {}; // {key: timestamp}
+let lastPushTime = {}; // {key: timestamp} — when WE last pushed this key
 
 // =====================================================
-// SUPABASE REST CLIENT
+// SUPABASE HELPERS
 // =====================================================
-const sb = {
-  async get(table, filter) {
-    const params = filter ? '?' + filter : '';
-    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + params, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json'
-      }
-    });
-    if (!r.ok) throw new Error(await r.text());
-    return r.json();
-  },
+async function sbGet(filter) {
+  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state?' + filter, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
 
-  async upsert(table, data) {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify(data)
-    });
-    if (!r.ok) throw new Error(await r.text());
-    return r.status === 204 ? {} : r.json();
-  },
+async function sbPush(key, value) {
+  if (!familyCode) return;
+  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state', {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({
+      family_code: familyCode,
+      key: key,
+      value: value,
+      updated_at: new Date().toISOString()
+    })
+  });
+  if (r.ok) lastPushTime[key] = Date.now();
+}
 
-  // Poll for changes from OTHER devices only
-  startPolling(callback) {
-    return setInterval(async () => {
-      if (!familyCode || isSyncing) return;
-      try {
-        // Only rows from OTHER devices, updated in last 30 seconds
-        const since = new Date(Date.now() - 30000).toISOString();
-        const rows = await sb.get('fm_state',
-          'family_code=eq.' + encodeURIComponent(familyCode) +
-          '&device_id=neq.' + encodeURIComponent(deviceId) +
-          '&updated_at=gt.' + encodeURIComponent(since) +
-          '&order=updated_at.desc'
-        );
-        if (rows && rows.length > 0) {
-          rows.forEach(row => {
-            // Only apply if cloud version is newer than our local change
-            const localTime = localChanges[row.key] || 0;
-            const cloudTime = new Date(row.updated_at).getTime();
-            if (cloudTime > localTime) {
-              applySupabaseRow(row);
-              flashSyncDot('var(--blue)');
-            }
-          });
-        }
-      } catch(e) { /* network error — ignore */ }
-    }, 4000);
+async function sbCreateFamily(code) {
+  await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=ignore-duplicates'
+    },
+    body: JSON.stringify({ code, name: 'Familie ' + code })
+  });
+}
+
+// =====================================================
+// LOAD FROM SUPABASE — always called on start
+// =====================================================
+async function loadFromSupabase(code) {
+  const rows = await sbGet('family_code=eq.' + encodeURIComponent(code) + '&order=updated_at.desc');
+  if (!rows || rows.length === 0) return false;
+  rows.forEach(row => applyRow(row.key, row.value));
+  return true;
+}
+
+function applyRow(key, value) {
+  switch(key) {
+    case 'persons':
+      persons = value;
+      lsSave('fm_persons', persons);
+      renderPersons(); renderWeek();
+      break;
+    case 'weekplan':
+      weekPlan = value;
+      lsSave('fm_weekplan', weekPlan);
+      renderWeek(); generateShoppingList(); renderLaden();
+      break;
+    case 'snackplan':
+      snackPlan = value; lsSave('fm_snackplan', snackPlan); break;
+    case 'mealpersons':
+      mealPersons = value; lsSave('fm_mealpersons', mealPersons); break;
+    case 'aktionen':
+      aktionen = value; lsSave('fm_aktionen', aktionen); renderAktionen(); break;
+    case 'settings':
+      settings = {...settings, ...value}; lsSave('fm_settings', settings); break;
+    case 'shopchecked':
+      shoppingChecked = value; lsSave('fm_shopchecked', shoppingChecked);
+      renderShoppingList(); renderLaden(); break;
+    case 'weekoffset':
+      currentWeekOffset = value; lsSave('fm_weekoffset', currentWeekOffset); renderWeek(); break;
+    case 'userrecipes':
+      userRecipes = value; lsSave('fm_userrecipes', userRecipes); renderRecipes(); break;
+    case 'vorrat':
+      vorrat = value; lsSave('fm_vorrat', vorrat); break;
   }
-};
+}
 
 // =====================================================
-// FAMILY SYNC — CONNECT
+// PUSH ALL STATE
+// =====================================================
+async function pushAll() {
+  if (!familyCode || isSyncing) return;
+  isSyncing = true;
+  const items = {
+    persons, weekplan: weekPlan, snackplan: snackPlan,
+    mealpersons: mealPersons, aktionen, settings,
+    shopchecked: shoppingChecked, weekoffset: currentWeekOffset,
+    userrecipes: userRecipes, vorrat
+  };
+  for (const [key, value] of Object.entries(items)) {
+    try { await sbPush(key, value); } catch(e) {}
+  }
+  isSyncing = false;
+  flashSyncDot('var(--green)');
+}
+
+// Push single key — debounced
+const _pushDebounce = {};
+function pushKey(key) {
+  if (!familyCode) return;
+  clearTimeout(_pushDebounce[key]);
+  _pushDebounce[key] = setTimeout(async () => {
+    const items = {
+      persons, weekplan: weekPlan, snackplan: snackPlan,
+      mealpersons: mealPersons, aktionen, settings,
+      shopchecked: shoppingChecked, weekoffset: currentWeekOffset,
+      userrecipes: userRecipes, vorrat
+    };
+    try {
+      await sbPush(key, items[key]);
+      flashSyncDot('var(--green)');
+    } catch(e) { flashSyncDot('var(--red)'); }
+  }, 800);
+}
+
+// =====================================================
+// CONNECT FAMILY
 // =====================================================
 async function connectFamily() {
   const el = document.getElementById('settFamilyCode');
@@ -4517,180 +4570,60 @@ async function connectFamily() {
   setSyncStatus('connecting');
 
   try {
-    // Create family if not exists (ignore duplicate)
-    await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=ignore-duplicates'
-      },
-      body: JSON.stringify({ code, name: 'Familie ' + code })
-    });
-
-    // Check cloud for existing data
-    const existing = await sb.get('fm_state', 'family_code=eq.' + code);
-
-    if (existing && existing.length > 0) {
-      // Compare timestamps — take newest per key
-      await mergeWithCloud(existing);
-      showToast('✅ Mit Familie ' + code + ' verbunden');
-    } else {
-      // New family — push all local data
-      await pushChangedKeys(Object.keys(ALL_STATE_KEYS()));
+    await sbCreateFamily(code);
+    const hasData = await loadFromSupabase(code);
+    if (!hasData) {
+      // New family — push local data
+      await pushAll();
       showToast('✅ Neue Familie ' + code + ' erstellt');
+    } else {
+      showToast('✅ Familie ' + code + ' verbunden & geladen');
     }
-
     setSyncStatus('connected');
-
-    // Start polling for other device changes
-    if (syncChannel) clearInterval(syncChannel);
-    syncChannel = sb.startPolling(row => applySupabaseRow(row));
-
+    startPolling();
   } catch(e) {
     setSyncStatus('error');
-    showToast('❌ Verbindungsfehler: ' + e.message);
-    console.error(e);
+    showToast('❌ Fehler: ' + e.message);
   }
 }
 
 // =====================================================
-// STATE KEYS MAP
+// POLLING — check for changes every 5 seconds
 // =====================================================
-function ALL_STATE_KEYS() {
-  return {
-    persons:     persons,
-    weekplan:    weekPlan,
-    snackplan:   snackPlan,
-    mealpersons: mealPersons,
-    aktionen:    aktionen,
-    settings:    settings,
-    shopchecked: shoppingChecked,
-    weekoffset:  currentWeekOffset,
-    userrecipes: userRecipes,
-    vorrat:      vorrat,
-  };
-}
-
-// =====================================================
-// PUSH — only changed keys, with device_id
-// =====================================================
-async function pushChangedKeys(keys) {
-  if (!familyCode) return;
-  isSyncing = true;
-  const state = ALL_STATE_KEYS();
-  const now = new Date().toISOString();
-  for (const key of keys) {
+function startPolling() {
+  if (syncChannel) clearInterval(syncChannel);
+  syncChannel = setInterval(async () => {
+    if (!familyCode || isSyncing) return;
     try {
-      await sb.upsert('fm_state', {
-        family_code: familyCode,
-        key,
-        value: state[key],
-        device_id: deviceId,
-        updated_at: now
+      // Get rows updated in last 10 seconds
+      const since = new Date(Date.now() - 10000).toISOString();
+      const rows = await sbGet(
+        'family_code=eq.' + encodeURIComponent(familyCode) +
+        '&updated_at=gt.' + encodeURIComponent(since)
+      );
+      rows.forEach(row => {
+        // Only apply if this key was not pushed by US in the last 3 seconds
+        const ourPush = lastPushTime[row.key] || 0;
+        const cloudTime = new Date(row.updated_at).getTime();
+        if (cloudTime > ourPush + 3000) {
+          applyRow(row.key, row.value);
+          flashSyncDot('var(--blue)');
+        }
       });
-      localChanges[key] = Date.now();
-    } catch(e) { console.warn('Push failed:', key, e.message); }
-  }
-  isSyncing = false;
-  flashSyncDot('var(--green)');
+    } catch(e) {}
+  }, 5000);
 }
 
 // =====================================================
-// PULL & MERGE — cloud wins only if newer
+// OVERRIDE saveAllState — push changed keys
 // =====================================================
-async function mergeWithCloud(rows) {
-  rows.forEach(row => {
-    const localTime = localChanges[row.key] || 0;
-    const cloudTime = new Date(row.updated_at).getTime();
-    // Cloud wins if it's newer than our last local change for this key
-    if (cloudTime > localTime) {
-      applySupabaseRow(row);
-    }
-    // else: keep local data
-  });
-  renderAll();
-}
-
-async function pullFromSupabase() {
-  if (!familyCode) return;
-  const rows = await sb.get('fm_state', 'family_code=eq.' + familyCode);
-  if (!rows || rows.length === 0) return;
-  rows.forEach(r => applySupabaseRow(r));
-  renderAll();
-  showToast('🔄 Synchronisiert');
-}
-
-function renderAll() {
-  renderWeek();
-  generateShoppingList();
-  renderLaden();
-  renderPersons();
-  renderAktionen();
-  renderRecipes();
-}
-
-function applySupabaseRow(row) {
-  switch(row.key) {
-    case 'persons':
-      persons = row.value;
-      lsSave('fm_persons', persons);
-      renderPersons();
-      renderWeek();
-      break;
-    case 'weekplan':
-      weekPlan = row.value;
-      lsSave('fm_weekplan', weekPlan);
-      renderWeek();
-      generateShoppingList();
-      renderLaden();
-      break;
-    case 'snackplan':    snackPlan = row.value;           lsSave('fm_snackplan', snackPlan); break;
-    case 'mealpersons':  mealPersons = row.value;         lsSave('fm_mealpersons', mealPersons); break;
-    case 'aktionen':     aktionen = row.value;            lsSave('fm_aktionen', aktionen); renderAktionen(); break;
-    case 'settings':     settings = {...settings, ...row.value}; lsSave('fm_settings', settings); break;
-    case 'shopchecked':  shoppingChecked = row.value;     lsSave('fm_shopchecked', shoppingChecked); renderShoppingList(); renderLaden(); break;
-    case 'weekoffset':   currentWeekOffset = row.value;   lsSave('fm_weekoffset', currentWeekOffset); renderWeek(); break;
-    case 'userrecipes':  userRecipes = row.value;         lsSave('fm_userrecipes', userRecipes); renderRecipes(); break;
-    case 'vorrat':       vorrat = row.value;              lsSave('fm_vorrat', vorrat); break;
-  }
-}
-
-// =====================================================
-// OVERRIDE saveAllState — push only changed key
-// =====================================================
-// Track which key is currently being saved
-let _currentSaveKey = null;
-
 const _origSaveAllState = saveAllState;
 function saveAllState() {
   _origSaveAllState();
-  if (familyCode && !isSyncing) {
-    // Push all keys but silently — debounced
-    clearTimeout(saveAllState._debounce);
-    saveAllState._debounce = setTimeout(() => {
-      pushChangedKeys(Object.keys(ALL_STATE_KEYS()));
-    }, 1500); // wait 1.5s after last change before pushing
-  }
-}
-
-// Targeted save — push only one specific key immediately
-function saveKey(key) {
   if (!familyCode || isSyncing) return;
-  const state = ALL_STATE_KEYS();
-  if (!(key in state)) return;
-  const now = new Date().toISOString();
-  sb.upsert('fm_state', {
-    family_code: familyCode,
-    key,
-    value: state[key],
-    device_id: deviceId,
-    updated_at: now
-  }).then(() => {
-    localChanges[key] = Date.now();
-    flashSyncDot('var(--green)');
-  }).catch(e => console.warn('saveKey failed:', key, e.message));
+  // Debounce: push all after 1 second
+  clearTimeout(saveAllState._t);
+  saveAllState._t = setTimeout(() => pushAll(), 1000);
 }
 
 // =====================================================
@@ -4699,13 +4632,13 @@ function saveKey(key) {
 function setSyncStatus(state) {
   const dot = document.getElementById('syncDot');
   const text = document.getElementById('syncStatusText');
-  const states = {
-    connected:  { color: 'var(--green)',  msg: '✅ Verbunden · ' + familyCode + ' · Gerät: ' + deviceId.slice(4,8) },
+  const cfg = {
+    connected:  { color: 'var(--green)',  msg: '✅ Verbunden · Code: ' + familyCode },
     connecting: { color: 'var(--yellow)', msg: '⏳ Verbinde...' },
-    error:      { color: 'var(--red)',    msg: '❌ Verbindungsfehler — prüfe Internet' },
-    offline:    { color: 'var(--border)', msg: 'Nicht verbunden — Daten nur lokal gespeichert' }
+    error:      { color: 'var(--red)',    msg: '❌ Verbindungsfehler' },
+    offline:    { color: 'var(--border)', msg: 'Nicht verbunden — nur lokal' }
   };
-  const s = states[state] || states.offline;
+  const s = cfg[state] || cfg.offline;
   if (dot) dot.style.background = s.color;
   if (text) text.textContent = s.msg;
   const hDot = document.getElementById('syncDotHeader');
@@ -4714,24 +4647,24 @@ function setSyncStatus(state) {
   if (hLabel) hLabel.textContent = state === 'connected' ? familyCode : state === 'connecting' ? '...' : 'offline';
 }
 
-async function manualSync() {
-  if (!familyCode) { showToast('Kein Familien-Code gesetzt'); return; }
-  flashSyncDot('var(--yellow)');
-  try {
-    await pullFromSupabase();
-    flashSyncDot('var(--green)');
-  } catch(e) {
-    flashSyncDot('var(--red)');
-    showToast('❌ Sync fehlgeschlagen');
-  }
-}
-
 function flashSyncDot(color) {
   const dot = document.getElementById('syncDotHeader');
   if (!dot) return;
-  const orig = dot.style.background || 'var(--green)';
+  const prev = dot.style.background;
   dot.style.background = color;
-  setTimeout(() => { dot.style.background = orig; }, 800);
+  setTimeout(() => { dot.style.background = prev; }, 600);
+}
+
+async function manualSync() {
+  if (!familyCode) { showToast('Kein Familien-Code'); return; }
+  flashSyncDot('var(--yellow)');
+  try {
+    await loadFromSupabase(familyCode);
+    flashSyncDot('var(--green)');
+    showToast('🔄 Synchronisiert');
+  } catch(e) {
+    flashSyncDot('var(--red)');
+  }
 }
 
 
@@ -4777,15 +4710,18 @@ function init() {
     if (el) el.value = savedCode;
     setSyncStatus('connecting');
     // Auto reconnect
-    // Auto-reconnect silently
-    sb.get('fm_state', 'family_code=eq.' + savedCode)
-      .then(rows => {
-        if (rows && rows.length > 0) mergeWithCloud(rows);
+    // Always load from Supabase first — fixes iPhone data loss after restart
+    familyCode = savedCode;
+    setSyncStatus('connecting');
+    loadFromSupabase(savedCode)
+      .then(() => {
         setSyncStatus('connected');
-        if (syncChannel) clearInterval(syncChannel);
-        syncChannel = sb.startPolling(row => applySupabaseRow(row));
+        startPolling();
       })
-      .catch(() => setSyncStatus('offline'));
+      .catch(() => {
+        setSyncStatus('offline');
+        // Supabase unreachable — keep local data
+      });
   } else {
     setSyncStatus('offline');
   }
