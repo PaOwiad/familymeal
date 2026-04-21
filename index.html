@@ -4477,13 +4477,24 @@ async function sbGet(filter) {
 async function sbPush(key, value, ts) {
   if (!familyCode) return;
   const updated_at = ts || new Date().toISOString();
-  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state', {
+
+  // Use PATCH (update) if row exists, POST (insert) if not
+  // Simpler: DELETE + INSERT approach via upsert with correct headers
+  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state?family_code=eq.' + familyCode + '&key=eq.' + key, {
+    method: 'DELETE',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  });
+
+  const r2 = await fetch(SUPABASE_URL + '/rest/v1/fm_state', {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates'
+      'Prefer': 'return=minimal'
     },
     body: JSON.stringify({
       family_code: familyCode,
@@ -4492,28 +4503,33 @@ async function sbPush(key, value, ts) {
       updated_at: updated_at
     })
   });
-  if (r.ok) {
+
+  if (r2.ok) {
     lastPushTime[key] = Date.now();
   } else {
-    const err = await r.text();
+    const err = await r2.text();
     throw new Error(err);
   }
 }
 
 async function sbCreateFamily(code) {
-  // Try to insert — ignore if already exists (409 = already exists = OK)
-  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
+  // Check if exists first, insert only if not
+  const existing = await fetch(SUPABASE_URL + '/rest/v1/fm_families?code=eq.' + code, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  const rows = await existing.json();
+  if (rows && rows.length > 0) return; // Already exists — OK
+
+  await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': 'resolution=ignore-duplicates,return=minimal'
+      'Prefer': 'return=minimal'
     },
     body: JSON.stringify({ code, name: 'Familie ' + code })
   });
-  // 201 = created, 200 = ok, 409 handled by ignore-duplicates → returns 200
-  return r;
 }
 
 // =====================================================
