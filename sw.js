@@ -1,21 +1,10 @@
-// FamilyMeal PWA Service Worker
-// Version wird automatisch aktualisiert
-const CACHE = 'familymeal-v10b';
+const CACHE = 'familymeal-v11';
 
 self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c =>
-      Promise.allSettled([
-        c.add('/familymeal/'),
-        c.add('/familymeal/index.html'),
-      ].map(p => p.catch(() => {})))
-    )
-  );
-  // Activate immediately
   self.skipWaiting();
 });
 
@@ -29,36 +18,40 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Never cache API calls
+  // Skip non-GET and API calls
+  if (e.request.method !== 'GET') return;
   if (e.request.url.includes('supabase.co') ||
       e.request.url.includes('openfoodfacts') ||
       e.request.url.includes('anthropic.com') ||
-      e.request.url.includes('googleapis.com')) {
-    return;
-  }
+      e.request.url.includes('googleapis.com')) return;
 
-  // Network first for HTML (always get latest version)
+  // Network first for HTML — always get latest
   if (e.request.destination === 'document') {
     e.respondWith(
-      fetch(e.request).then(resp => {
-        const clone = resp.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return resp;
-      }).catch(() => caches.match(e.request))
+      fetch(e.request)
+        .then(resp => {
+          if (resp && resp.status === 200) {
+            const clone = resp.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
+          }
+          return resp;
+        })
+        .catch(() => caches.match(e.request))
     );
     return;
   }
 
-  // Cache first for other assets
+  // Cache first for other assets (fonts etc)
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(resp => {
         if (resp && resp.status === 200) {
-          caches.open(CACHE).then(c => c.put(e.request, resp.clone()));
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(() => cached);
+      }).catch(() => caches.match(e.request));
     })
   );
 });
