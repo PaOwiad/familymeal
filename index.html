@@ -4655,7 +4655,7 @@ async function connectFamily() {
 // =====================================================
 function startPolling() {
   if (syncChannel) clearInterval(syncChannel);
-  let lastCheck = Date.now() - 5000; // start from 5s ago
+  let lastCheck = Date.now() - 60000; // start from 60s ago to catch recent changes
 
   syncChannel = setInterval(async () => {
     if (!familyCode || isSyncing) return;
@@ -4682,8 +4682,8 @@ function startPolling() {
         const newest = rows[rows.length - 1];
         lastCheck = new Date(newest.updated_at).getTime() + 1;
       } else {
-        // No new rows — advance lastCheck to now
-        lastCheck = Date.now() - 1000;
+        // No new rows — advance lastCheck slowly
+        lastCheck = Date.now() - 2000;
       }
     } catch(e) { console.warn('Poll error:', e.message); }
   }, 4000);
