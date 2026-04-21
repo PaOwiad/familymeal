@@ -4698,35 +4698,30 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-function init() {
-  // Load persisted state
+// Show loading screen while Supabase loads
+function showLoader(msg) {
+  let el = document.getElementById('appLoader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'appLoader';
+    el.style.cssText = 'position:fixed;inset:0;background:var(--text);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:DM Sans,sans-serif';
+    el.innerHTML = '<div style="font-family:DM Serif Display,serif;font-size:28px;margin-bottom:12px">🍽️ FamilyMeal</div><div id="loaderMsg" style="font-size:14px;opacity:0.7"></div>';
+    document.body.appendChild(el);
+  }
+  document.getElementById('loaderMsg').textContent = msg || 'Laden...';
+}
+function hideLoader() {
+  const el = document.getElementById('appLoader');
+  if (el) { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }
+}
+
+async function init() {
+  showLoader('Daten laden...');
+
+  // 1. Load from localStorage as immediate fallback
   loadAllState();
 
-  // Restore family code and reconnect
-  const savedCode = lsLoad('fm_family_code', '');
-  if (savedCode) {
-    familyCode = savedCode;
-    const el = document.getElementById('settFamilyCode');
-    if (el) el.value = savedCode;
-    setSyncStatus('connecting');
-    // Auto reconnect
-    // Always load from Supabase first — fixes iPhone data loss after restart
-    familyCode = savedCode;
-    setSyncStatus('connecting');
-    loadFromSupabase(savedCode)
-      .then(() => {
-        setSyncStatus('connected');
-        startPolling();
-      })
-      .catch(() => {
-        setSyncStatus('offline');
-        // Supabase unreachable — keep local data
-      });
-  } else {
-    setSyncStatus('offline');
-  }
-
-  // Apply saved settings to UI controls
+  // 2. Apply settings to UI
   document.getElementById('settBudget').value = settings.budget;
   document.getElementById('settGuestBudget').value = settings.guestBudget;
   document.getElementById('settAlcBudget').value = settings.alcBudget;
@@ -4744,24 +4739,51 @@ function init() {
     });
   }
 
-  // Render all views
+  // 3. If family code exists — load from Supabase FIRST, then render
+  const savedCode = lsLoad('fm_family_code', '');
+  if (savedCode) {
+    familyCode = savedCode;
+    const el = document.getElementById('settFamilyCode');
+    if (el) el.value = savedCode;
+    setSyncStatus('connecting');
+    showLoader('Synchronisiere mit Familie ' + savedCode + '...');
+    try {
+      await loadFromSupabase(savedCode);
+      setSyncStatus('connected');
+      startPolling();
+    } catch(e) {
+      setSyncStatus('offline');
+      showToast('Offline — lokale Daten werden angezeigt');
+    }
+  } else {
+    setSyncStatus('offline');
+  }
+
+  // 4. Render everything with final data
   renderWeek();
   renderRecipes();
   renderPersons();
   renderAktionen();
-
-  // Rebuild shopping list from saved plan
   generateShoppingList();
   renderLaden();
+  renderBasis();
 
-  // Close modals on overlay click
+  // 5. Hide loader
+  hideLoader();
+
+  // 6. Event listeners
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
-  // Close scanner on Escape
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScanner(); });
+
+  // 7. Restore API key indicator
+  if (savedApiKey) {
+    const statusEl = document.getElementById('apiKeyStatus');
+    if (statusEl) { statusEl.textContent = '✅ API Key gespeichert'; statusEl.style.color = 'var(--green)'; }
+  }
 }
 
 init();
