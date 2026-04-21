@@ -3531,6 +3531,8 @@ function loadAllState() {
   shoppingChecked = lsLoad(LS_KEYS.shoppingChecked, {});
   currentWeekOffset = lsLoad(LS_KEYS.weekOffset, 0);
   userRecipes = lsLoad(LS_KEYS.userRecipes, []);
+  vorrat = lsLoad('fm_vorrat', []);
+  basisHave = lsLoad('fm_basis', {});
 }
 
 // =====================================================
@@ -4090,14 +4092,14 @@ function addVorrat(name, qty, emoji, barcode) {
     addedDate: new Date().toLocaleDateString('de-CH')
   });
   if (inputEl) inputEl.value = '';
-  lsSave('fm_vorrat', vorrat);
+  saveAllState();
   renderVorratList();
   showToast(n + ' zum Vorrat hinzugefügt');
 }
 
 function removeVorrat(id) {
   vorrat = vorrat.filter(v => v.id !== id);
-  lsSave('fm_vorrat', vorrat);
+  saveAllState();
   renderVorratList();
 }
 
