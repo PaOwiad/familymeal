@@ -4437,14 +4437,23 @@ let lastPushTime = {}; // {key: timestamp} — when WE last pushed this key
 // =====================================================
 async function sbGet(filter) {
   const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state?' + filter, {
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Accept': 'application/json'
+    }
   });
-  if (!r.ok) throw new Error(await r.text());
+  if (!r.ok) {
+    const txt = await r.text();
+    console.warn('sbGet error:', txt);
+    throw new Error(txt);
+  }
   return r.json();
 }
 
-async function sbPush(key, value) {
+async function sbPush(key, value, ts) {
   if (!familyCode) return;
+  const updated_at = ts || new Date().toISOString();
   const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state', {
     method: 'POST',
     headers: {
@@ -4457,10 +4466,15 @@ async function sbPush(key, value) {
       family_code: familyCode,
       key: key,
       value: value,
-      updated_at: new Date().toISOString()
+      updated_at: updated_at
     })
   });
-  if (r.ok) lastPushTime[key] = Date.now();
+  if (r.ok) {
+    lastPushTime[key] = Date.now();
+  } else {
+    const err = await r.text();
+    throw new Error(err);
+  }
 }
 
 async function sbCreateFamily(code) {
@@ -4530,8 +4544,13 @@ async function pushAll() {
     shopchecked: shoppingChecked, weekoffset: currentWeekOffset,
     userrecipes: userRecipes, vorrat
   };
+  const now = new Date().toISOString();
+  console.log('Pushing all keys to Supabase at', now);
   for (const [key, value] of Object.entries(items)) {
-    try { await sbPush(key, value); } catch(e) {}
+    try {
+      await sbPush(key, value, now);
+      console.log('Pushed:', key);
+    } catch(e) { console.warn('Push failed:', key, e.message); }
   }
   isSyncing = false;
   flashSyncDot('var(--green)');
@@ -4592,26 +4611,38 @@ async function connectFamily() {
 // =====================================================
 function startPolling() {
   if (syncChannel) clearInterval(syncChannel);
+  let lastCheck = Date.now() - 5000; // start from 5s ago
+
   syncChannel = setInterval(async () => {
     if (!familyCode || isSyncing) return;
     try {
-      // Get rows updated in last 10 seconds
-      const since = new Date(Date.now() - 10000).toISOString();
-      const rows = await sbGet(
-        'family_code=eq.' + encodeURIComponent(familyCode) +
-        '&updated_at=gt.' + encodeURIComponent(since)
-      );
-      rows.forEach(row => {
-        // Only apply if this key was not pushed by US in the last 3 seconds
-        const ourPush = lastPushTime[row.key] || 0;
-        const cloudTime = new Date(row.updated_at).getTime();
-        if (cloudTime > ourPush + 3000) {
-          applyRow(row.key, row.value);
-          flashSyncDot('var(--blue)');
-        }
-      });
-    } catch(e) {}
-  }, 5000);
+      // ISO date without encodeURIComponent — Supabase needs raw date
+      const since = new Date(lastCheck).toISOString();
+      const url = 'family_code=eq.' + familyCode +
+        '&updated_at=gt.' + since +
+        '&order=updated_at.asc';
+      const rows = await sbGet(url);
+
+      if (rows && rows.length > 0) {
+        rows.forEach(row => {
+          // Skip rows we just pushed (within 4 seconds)
+          const ourPush = lastPushTime[row.key] || 0;
+          const cloudTime = new Date(row.updated_at).getTime();
+          if (cloudTime > ourPush + 4000) {
+            applyRow(row.key, row.value);
+            flashSyncDot('var(--blue)');
+            console.log('Sync received:', row.key, 'from cloud');
+          }
+        });
+        // Move lastCheck to newest row time
+        const newest = rows[rows.length - 1];
+        lastCheck = new Date(newest.updated_at).getTime() + 1;
+      } else {
+        // No new rows — advance lastCheck to now
+        lastCheck = Date.now() - 1000;
+      }
+    } catch(e) { console.warn('Poll error:', e.message); }
+  }, 4000);
 }
 
 // =====================================================
