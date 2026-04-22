@@ -10,7 +10,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FamilyMeal">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1714'/><text y='.9em' font-size='80' x='10'>🍽️</text></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1714'/><text y='.9em' font-size='80' x='10'>🍽️</text></svg>">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1714'/><text y='.9em' font-size='80' x='10'>🍽️</text></svg>">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1714'/><text y='.9em' font-size='80' x='10'>🍽️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1956,7 +1958,186 @@ const RECIPES = [
   {id:'r88', name:'Zürcher Wienerschnitzel mit Erdbeersalat', emoji:'🥩', tags:['fruehling','schweizer'], kcal:560, zeit:25, pers:4, cost:22, src:'Meinetiptopf',
    ingredients:[{n:'Kalbsschnitzel',q:'4 Stk'},{n:'Paniermehl',q:'150g'},{n:'Eier',q:'2 Stk'},{n:'Mehl',q:'80g'},{n:'Butter',q:'80g'},{n:'Zitrone',q:'2 Stk'},{n:'Kopfsalat',q:'1 Stk'},{n:'Erdbeeren',q:'200g'}]},
 
-  // DESSERTS
+  // NEUE REZEPTE r89–r128
+  // ── Schnelle Alltags-Küche ──
+  {id:'r89', name:'Zucchini-Frittata', emoji:'🥚', tags:['vegetarisch','schnell','sommer'], kcal:280, zeit:20, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Eier',q:'6 Stk'},{n:'Zucchetti',q:'2 Stk'},{n:'Zwiebel',q:'1 Stk'},{n:'Parmesan gerieben',q:'60g'},{n:'Olivenöl',q:'2 EL'},{n:'Basilikum',q:'0.5 Bund'},{n:'Salz, Pfeffer',q:'nach Geschmack'}]},
+  {id:'r90', name:'Käse-Lauch-Suppe', emoji:'🧅', tags:['suppe','vegetarisch','herbst','winter'], kcal:320, zeit:30, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Lauch',q:'3 Stangen'},{n:'Kartoffeln',q:'400g'},{n:'Gruyère gerieben',q:'120g'},{n:'Gemüsebouillon',q:'1L'},{n:'Rahm',q:'1dl'},{n:'Butter',q:'30g'},{n:'Muskatnuss',q:'Prise'}]},
+  {id:'r91', name:'Tomaten-Basilikum-Pasta', emoji:'🍅', tags:['pasta','vegetarisch','schnell','sommer'], kcal:420, zeit:15, pers:4, cost:6, src:'Eigenrezept',
+   ingredients:[{n:'Spaghetti',q:'400g'},{n:'Tomaten',q:'6 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Basilikum',q:'1 Bund'},{n:'Olivenöl',q:'4 EL'},{n:'Parmesan',q:'60g'},{n:'Chilliflocken',q:'1 TL'}]},
+  {id:'r92', name:'Poulet Tikka Masala', emoji:'🍛', tags:['indian','poulet','würzig'], kcal:480, zeit:40, pers:4, cost:14, src:'Meinetiptopf',
+   ingredients:[{n:'Hähnchenbrustfilet',q:'600g'},{n:'Tomaten passiert',q:'400g'},{n:'Kokosmilch',q:'2dl'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Ingwer',q:'2cm'},{n:'Garam Masala',q:'2 TL'},{n:'Paprikapulver',q:'1 TL'},{n:'Joghurt nature',q:'100g'},{n:'Basmati-Reis',q:'300g'}]},
+  {id:'r93', name:'Grillierter Lachs mit Zitronenrisotto', emoji:'🐟', tags:['fisch','sommer','weekend'], kcal:520, zeit:35, pers:4, cost:22, src:'Eigenrezept',
+   ingredients:[{n:'Lachsfilet',q:'600g'},{n:'Risotto-Reis',q:'300g'},{n:'Gemüsebouillon',q:'1L'},{n:'Weisswein',q:'1dl'},{n:'Parmesan',q:'60g'},{n:'Butter',q:'40g'},{n:'Zitrone',q:'2 Stk'},{n:'Dill',q:'0.5 Bund'}]},
+  {id:'r94', name:'Linsen-Dal mit Naan', emoji:'🫘', tags:['vegetarisch','vegan','indian','günstig'], kcal:390, zeit:35, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Rote Linsen',q:'300g'},{n:'Kokosmilch',q:'2dl'},{n:'Tomaten passiert',q:'400g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Ingwer',q:'2cm'},{n:'Kurkuma',q:'1 TL'},{n:'Kreuzkümmel',q:'1 TL'},{n:'Naan-Brot',q:'4 Stk'}]},
+  {id:'r95', name:'Zürcher Geschnetzeltes (klassisch)', emoji:'🥩', tags:['schweizer','klassiker','weekend'], kcal:540, zeit:30, pers:4, cost:24, src:'Meinetiptopf',
+   ingredients:[{n:'Kalbsfilet',q:'600g'},{n:'Champignons',q:'300g'},{n:'Rahm',q:'2dl'},{n:'Weisswein',q:'1dl'},{n:'Schalotten',q:'3 Stk'},{n:'Butter',q:'40g'},{n:'Rösti (TK)',q:'600g'},{n:'Petersilie',q:'0.5 Bund'}]},
+  {id:'r96', name:'Shakshuka', emoji:'🍳', tags:['vegetarisch','schnell','mediterran','brunch'], kcal:310, zeit:25, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Eier',q:'6 Stk'},{n:'Tomaten passiert',q:'800g'},{n:'Peperoni',q:'2 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Paprikapulver',q:'2 TL'},{n:'Kreuzkümmel',q:'1 TL'},{n:'Feta',q:'80g'},{n:'Brot',q:'4 Scheiben'}]},
+  {id:'r97', name:'Gemüsecurry mit Kichererbsen', emoji:'🥦', tags:['vegetarisch','vegan','indian','günstig'], kcal:360, zeit:30, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Kichererbsen (Dose)',q:'400g'},{n:'Süsskartoffeln',q:'500g'},{n:'Kokosmilch',q:'2dl'},{n:'Spinat TK',q:'200g'},{n:'Tomaten passiert',q:'400g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Currypulver',q:'2 TL'},{n:'Basmati-Reis',q:'300g'}]},
+  {id:'r98', name:'Flammkuchen (Elsässer Art)', emoji:'🫓', tags:['vegetarisch','schnell','schweizer','herbst'], kcal:450, zeit:25, pers:4, cost:9, src:'Meinetiptopf',
+   ingredients:[{n:'Fertig-Flammkuchenteig',q:'2 Rollen'},{n:'Crème fraîche',q:'200g'},{n:'Speck gewürfelt',q:'150g'},{n:'Zwiebeln',q:'3 Stk'},{n:'Gruyère gerieben',q:'80g'},{n:'Muskatnuss',q:'Prise'},{n:'Schnittlauch',q:'0.5 Bund'}]},
+
+  // ── Suppen & Eintöpfe ──
+  {id:'r99', name:'Minestrone', emoji:'🥣', tags:['suppe','vegetarisch','sommer','günstig'], kcal:260, zeit:40, pers:6, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Karotten',q:'3 Stk'},{n:'Stangensellerie',q:'3 Stangen'},{n:'Zucchetti',q:'2 Stk'},{n:'Tomaten',q:'4 Stk'},{n:'Bohnen weiss (Dose)',q:'400g'},{n:'Pasta kleine',q:'100g'},{n:'Knoblauch',q:'2 Zehen'},{n:'Gemüsebouillon',q:'1.5L'},{n:'Parmesan Rinde',q:'1 Stk'},{n:'Basilikum',q:'0.5 Bund'}]},
+  {id:'r100', name:'Französische Zwiebelsuppe', emoji:'🧅', tags:['suppe','vegetarisch','winter','klassiker'], kcal:340, zeit:60, pers:4, cost:9, src:'Meinetiptopf',
+   ingredients:[{n:'Zwiebeln',q:'1kg'},{n:'Weisswein',q:'1dl'},{n:'Rinds- oder Gemüsebouillon',q:'1L'},{n:'Butter',q:'50g'},{n:'Gruyère gerieben',q:'150g'},{n:'Baguette',q:'8 Scheiben'},{n:'Thymian',q:'3 Zweige'},{n:'Lorbeer',q:'2 Blätter'}]},
+  {id:'r101', name:'Kürbissuppe mit Ingwer', emoji:'🎃', tags:['suppe','vegetarisch','herbst','vegan'], kcal:220, zeit:35, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Kürbis (Hokkaido)',q:'1kg'},{n:'Ingwer',q:'3cm'},{n:'Kokosmilch',q:'1dl'},{n:'Gemüsebouillon',q:'1L'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'2 Zehen'},{n:'Olivenöl',q:'2 EL'},{n:'Koriander',q:'0.5 Bund'}]},
+  {id:'r102', name:'Bündner Gerstensuppe', emoji:'🥣', tags:['suppe','schweizer','herbst','winter'], kcal:380, zeit:90, pers:6, cost:10, src:'Meinetiptopf',
+   ingredients:[{n:'Rollgerste',q:'150g'},{n:'Speck geräuchert',q:'200g'},{n:'Karotten',q:'3 Stk'},{n:'Sellerie',q:'1/4 Knolle'},{n:'Lauch',q:'1 Stange'},{n:'Fleischbouillon',q:'2L'},{n:'Lorbeer',q:'2 Blätter'},{n:'Petersilie',q:'0.5 Bund'}]},
+  {id:'r103', name:'Tomatensuppe mit Grillkäse', emoji:'🍅', tags:['suppe','vegetarisch','schnell'], kcal:280, zeit:20, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Tomaten passiert',q:'800g'},{n:'Gemüsebouillon',q:'5dl'},{n:'Rahm',q:'1dl'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'2 Zehen'},{n:'Zucker',q:'1 TL'},{n:'Basilikum',q:'0.5 Bund'},{n:'Grillkäse',q:'200g'}]},
+
+  // ── Fleisch & Geflügel ──
+  {id:'r104', name:'Poulet Provençal', emoji:'🍗', tags:['poulet','mediterran','herbst'], kcal:440, zeit:50, pers:4, cost:16, src:'Meinetiptopf',
+   ingredients:[{n:'Poulet-Unterkeulen',q:'8 Stk'},{n:'Tomaten',q:'4 Stk'},{n:'Oliven schwarz',q:'100g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'4 Zehen'},{n:'Weisswein',q:'1dl'},{n:'Thymian',q:'4 Zweige'},{n:'Rosmarin',q:'2 Zweige'},{n:'Olivenöl',q:'3 EL'}]},
+  {id:'r105', name:'Gehacktes mit Hörnli und Apfelmus', emoji:'🍖', tags:['schweizer','klassiker','kinder','schnell'], kcal:520, zeit:25, pers:4, cost:10, src:'Eigenrezept',
+   ingredients:[{n:'Hackfleisch gemischt',q:'500g'},{n:'Hörnli',q:'350g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Tomatenpüree',q:'2 EL'},{n:'Bouillon',q:'2dl'},{n:'Apfelmus',q:'400g'},{n:'Parmesan',q:'60g'}]},
+  {id:'r106', name:'Lammkoteletts mit Rosmarinkartoffeln', emoji:'🥩', tags:['fleisch','mediterran','weekend'], kcal:580, zeit:45, pers:4, cost:26, src:'Eigenrezept',
+   ingredients:[{n:'Lammkoteletts',q:'8 Stk'},{n:'Kartoffeln',q:'800g'},{n:'Rosmarin',q:'4 Zweige'},{n:'Knoblauch',q:'4 Zehen'},{n:'Olivenöl',q:'4 EL'},{n:'Zitrone',q:'1 Stk'},{n:'Salz, Pfeffer',q:'nach Geschmack'}]},
+  {id:'r107', name:'Currywurst Schweizer Art mit Pommes', emoji:'🌭', tags:['schnell','kinder','deutsch'], kcal:620, zeit:25, pers:4, cost:12, src:'Eigenrezept',
+   ingredients:[{n:'Bratwürste',q:'8 Stk'},{n:'Tomaten passiert',q:'400g'},{n:'Currypulver',q:'2 TL'},{n:'Paprikapulver',q:'1 TL'},{n:'Zwiebeln',q:'2 Stk'},{n:'Ketchup',q:'3 EL'},{n:'Kartoffeln (Wedges)',q:'800g'}]},
+  {id:'r108', name:'Berner Platte (vereinfacht)', emoji:'🥩', tags:['schweizer','herbst','winter','weekend'], kcal:720, zeit:60, pers:4, cost:22, src:'Meinetiptopf',
+   ingredients:[{n:'Kotelett geräuchert',q:'4 Stk'},{n:'Speck geräuchert',q:'200g'},{n:'Würste (Cervelat/Schüblig)',q:'4 Stk'},{n:'Sauerkraut',q:'600g'},{n:'Kartoffeln',q:'800g'},{n:'Bohnen grün',q:'400g'},{n:'Weisswein',q:'1dl'}]},
+
+  // ── Vegetarisch & Vegan ──
+  {id:'r109', name:'Spinat-Ricotta-Cannelloni', emoji:'🫘', tags:['pasta','vegetarisch','weekend'], kcal:480, zeit:60, pers:4, cost:12, src:'Meinetiptopf',
+   ingredients:[{n:'Cannelloni (trocken)',q:'250g'},{n:'Ricotta',q:'500g'},{n:'Babyspinat',q:'300g'},{n:'Eier',q:'2 Stk'},{n:'Parmesan',q:'80g'},{n:'Tomaten passiert',q:'600g'},{n:'Mozzarella',q:'200g'},{n:'Muskatnuss',q:'Prise'}]},
+  {id:'r110', name:'Polenta mit Pilzragout', emoji:'🍄', tags:['vegetarisch','herbst','schweizer','glutenfrei'], kcal:380, zeit:35, pers:4, cost:11, src:'Eigenrezept',
+   ingredients:[{n:'Instant-Polenta',q:'250g'},{n:'Gemischte Pilze',q:'600g'},{n:'Parmesan',q:'80g'},{n:'Butter',q:'50g'},{n:'Knoblauch',q:'3 Zehen'},{n:'Rosmarin',q:'2 Zweige'},{n:'Rahm',q:'1dl'},{n:'Rotwein',q:'1dl'}]},
+  {id:'r111', name:'Süsskartoffel-Black Bean Bowl', emoji:'🥗', tags:['vegetarisch','vegan','sommer','gesund'], kcal:420, zeit:35, pers:4, cost:9, src:'Eigenrezept',
+   ingredients:[{n:'Süsskartoffeln',q:'600g'},{n:'Schwarze Bohnen (Dose)',q:'400g'},{n:'Avocado',q:'2 Stk'},{n:'Mais (Dose)',q:'200g'},{n:'Limetten',q:'2 Stk'},{n:'Koriander',q:'0.5 Bund'},{n:'Chipotle-Pulver',q:'1 TL'},{n:'Olivenöl',q:'3 EL'}]},
+  {id:'r112', name:'Gemüse-Wok mit Tofu', emoji:'🥬', tags:['vegetarisch','vegan','asiatisch','schnell','gesund'], kcal:310, zeit:20, pers:4, cost:10, src:'Eigenrezept',
+   ingredients:[{n:'Fester Tofu',q:'400g'},{n:'Brokkoli',q:'300g'},{n:'Karotten',q:'3 Stk'},{n:'Peperoni',q:'2 Stk'},{n:'Sojasprossen',q:'150g'},{n:'Sojasauce',q:'3 EL'},{n:'Sesamöl',q:'1 EL'},{n:'Ingwer',q:'2cm'},{n:'Reis',q:'300g'}]},
+  {id:'r113', name:'Caprese-Gnocchi-Pfanne', emoji:'🍅', tags:['vegetarisch','schnell','sommer','pasta'], kcal:440, zeit:20, pers:4, cost:10, src:'Eigenrezept',
+   ingredients:[{n:'Gnocchi (frisch)',q:'500g'},{n:'Cherrytomaten',q:'400g'},{n:'Mozzarella',q:'250g'},{n:'Basilikum',q:'1 Bund'},{n:'Knoblauch',q:'2 Zehen'},{n:'Olivenöl',q:'3 EL'},{n:'Balsamico-Creme',q:'2 EL'}]},
+
+  // ── Fisch & Meeresfrüchte ──
+  {id:'r114', name:'Fischgratin mit Käsekruste', emoji:'🐟', tags:['fisch','schweizer','winter'], kcal:460, zeit:40, pers:4, cost:18, src:'Meinetiptopf',
+   ingredients:[{n:'Weissfischfilet (Egli/Zander)',q:'600g'},{n:'Gruyère gerieben',q:'120g'},{n:'Rahm',q:'2dl'},{n:'Kartoffeln',q:'600g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Zitrone',q:'1 Stk'},{n:'Dill',q:'0.5 Bund'},{n:'Butter',q:'30g'}]},
+  {id:'r115', name:'Garnelen-Kokos-Curry', emoji:'🍤', tags:['asiatisch','schnell','fisch','sommer'], kcal:400, zeit:20, pers:4, cost:20, src:'Eigenrezept',
+   ingredients:[{n:'Crevetten TK',q:'400g'},{n:'Kokosmilch',q:'2dl'},{n:'Limetten',q:'2 Stk'},{n:'Ingwer',q:'2cm'},{n:'Zitronengras',q:'1 Stange'},{n:'Fischsauce',q:'1 EL'},{n:'Chillis',q:'1 Stk'},{n:'Koriander',q:'0.5 Bund'},{n:'Jasmin-Reis',q:'300g'}]},
+  {id:'r116', name:'Lachs-Avocado-Bowl', emoji:'🥑', tags:['fisch','gesund','sommer','schnell'], kcal:490, zeit:20, pers:4, cost:22, src:'Eigenrezept',
+   ingredients:[{n:'Lachsfilet',q:'500g'},{n:'Avocado',q:'2 Stk'},{n:'Gurke',q:'1 Stk'},{n:'Sushi-Reis',q:'300g'},{n:'Reisessig',q:'2 EL'},{n:'Sojasauce',q:'2 EL'},{n:'Sesam',q:'2 EL'},{n:'Nori-Blätter',q:'4 Stk'},{n:'Sriracha',q:'2 TL'}]},
+  {id:'r117', name:'Muscheln in Weissweinsuppe', emoji:'🦪', tags:['fisch','weekend','mediterran','sommer'], kcal:320, zeit:25, pers:4, cost:16, src:'Meinetiptopf',
+   ingredients:[{n:'Miesmuscheln',q:'1.5kg'},{n:'Weisswein',q:'2dl'},{n:'Schalotten',q:'4 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Rahm',q:'1dl'},{n:'Butter',q:'30g'},{n:'Petersilie',q:'0.5 Bund'},{n:'Baguette',q:'1 Stk'}]},
+
+  // ── Schweizer Klassiker ──
+  {id:'r118', name:'Älplermagronen', emoji:'🧀', tags:['schweizer','klassiker','vegetarisch','herbst'], kcal:580, zeit:40, pers:4, cost:10, src:'Meinetiptopf',
+   ingredients:[{n:'Magronen/Hörnli',q:'300g'},{n:'Kartoffeln',q:'400g'},{n:'Appenzeller gerieben',q:'200g'},{n:'Rahm',q:'2dl'},{n:'Zwiebeln',q:'3 Stk'},{n:'Butter',q:'30g'},{n:'Apfelmus',q:'300g'}]},
+  {id:'r119', name:'Maluns (Graubündner)', emoji:'🥔', tags:['schweizer','vegetarisch','herbst','frühstück'], kcal:420, zeit:45, pers:4, cost:6, src:'Meinetiptopf',
+   ingredients:[{n:'Kartoffeln gekocht vom Vortag',q:'1kg'},{n:'Mehl',q:'150g'},{n:'Butter',q:'80g'},{n:'Salz',q:'nach Geschmack'},{n:'Appenzeller',q:'150g'},{n:'Apfelmus',q:'300g'}]},
+  {id:'r120', name:'Basler Mehlsuppe', emoji:'🥣', tags:['suppe','schweizer','schnell'], kcal:220, zeit:20, pers:4, cost:4, src:'Meinetiptopf',
+   ingredients:[{n:'Weissmehl',q:'80g'},{n:'Butter',q:'40g'},{n:'Rindsbouillon',q:'1L'},{n:'Gruyère gerieben',q:'100g'},{n:'Brot (Röstbrot)',q:'4 Scheiben'},{n:'Salz, Pfeffer',q:'nach Geschmack'}]},
+  {id:'r121', name:'Churer Fleischtorte', emoji:'🥧', tags:['schweizer','weekend','fleisch'], kcal:540, zeit:70, pers:6, cost:16, src:'Meinetiptopf',
+   ingredients:[{n:'Blätterteig',q:'2 Rollen'},{n:'Hackfleisch gemischt',q:'400g'},{n:'Speck',q:'100g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Eier',q:'2 Stk'},{n:'Rahm',q:'1dl'},{n:'Muskatnuss',q:'Prise'},{n:'Majoran',q:'1 TL'}]},
+
+  // ── Salate & Leichte Gerichte ──
+  {id:'r122', name:'Glarner Nudelsalat', emoji:'🥗', tags:['salat','schweizer','sommer','schnell'], kcal:380, zeit:20, pers:6, cost:9, src:'Eigenrezept',
+   ingredients:[{n:'Pasta-Spiralen',q:'400g'},{n:'Schinken gewürfelt',q:'200g'},{n:'Erbsen TK',q:'150g'},{n:'Peperoni',q:'1 Stk'},{n:'Mayonnaise',q:'4 EL'},{n:'Joghurt nature',q:'3 EL'},{n:'Dijon-Senf',q:'1 TL'},{n:'Zitronensaft',q:'1 EL'}]},
+  {id:'r123', name:'Avocado-Halloumi-Salat', emoji:'🥑', tags:['salat','vegetarisch','sommer','gesund'], kcal:430, zeit:15, pers:4, cost:14, src:'Eigenrezept',
+   ingredients:[{n:'Halloumi',q:'250g'},{n:'Avocado',q:'2 Stk'},{n:'Rucola',q:'100g'},{n:'Cherrytomaten',q:'250g'},{n:'Gurke',q:'1 Stk'},{n:'Olivenöl',q:'3 EL'},{n:'Zitronensaft',q:'2 EL'},{n:'Minze',q:'0.5 Bund'}]},
+  {id:'r124', name:'Rösti-Teller mit Spiegelei', emoji:'🍳', tags:['schweizer','brunch','vegetarisch','schnell'], kcal:460, zeit:20, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Rösti TK oder frisch',q:'600g'},{n:'Eier',q:'4 Stk'},{n:'Butter',q:'40g'},{n:'Schnittlauch',q:'0.5 Bund'},{n:'Sauerrahm',q:'100g'},{n:'Salz, Pfeffer',q:'nach Geschmack'}]},
+  {id:'r125', name:'Niçoise-Salat', emoji:'🥗', tags:['salat','fisch','sommer','mediterran'], kcal:380, zeit:20, pers:4, cost:14, src:'Meinetiptopf',
+   ingredients:[{n:'Thunfisch in Öl (Dose)',q:'300g'},{n:'Eier',q:'4 Stk'},{n:'Grüne Bohnen',q:'250g'},{n:'Kartoffeln',q:'400g'},{n:'Cherrytomaten',q:'200g'},{n:'Oliven schwarz',q:'80g'},{n:'Sardellenfilets',q:'8 Stk'},{n:'Senf-Vinaigrette',q:'4 EL'}]},
+
+  // ── Backen & Süsses ──
+  {id:'r126', name:'Bananenbrot (feucht & saftig)', emoji:'🍌', tags:['dessert','brunch','vegetarisch','kinder'], kcal:310, zeit:70, pers:8, cost:5, src:'Eigenrezept',
+   ingredients:[{n:'Überreife Bananen',q:'3 Stk'},{n:'Mehl',q:'200g'},{n:'Butter',q:'80g'},{n:'Zucker',q:'80g'},{n:'Eier',q:'2 Stk'},{n:'Backpulver',q:'1 TL'},{n:'Natron',q:'0.5 TL'},{n:'Zimt',q:'1 TL'},{n:'Salz',q:'Prise'}]},
+  {id:'r127', name:'Apfelküchlein mit Vanillesauce', emoji:'🍎', tags:['dessert','vegetarisch','herbst','kinder'], kcal:340, zeit:30, pers:6, cost:7, src:'Meinetiptopf',
+   ingredients:[{n:'Äpfel',q:'4 Stk'},{n:'Mehl',q:'200g'},{n:'Eier',q:'2 Stk'},{n:'Milch',q:'2dl'},{n:'Zucker',q:'3 EL'},{n:'Zimt',q:'1 TL'},{n:'Backpulver',q:'1 TL'},{n:'Pflanzöl',q:'1L (zum Frittieren)'},{n:'Vanillesauce (Fertig)',q:'4dl'}]},
+  {id:'r128', name:'Vermicelles (Kastaniencrème)', emoji:'🌰', tags:['dessert','schweizer','herbst'], kcal:360, zeit:15, pers:6, cost:9, src:'Meinetiptopf',
+   ingredients:[{n:'Kastanien-Crème (Tube)',q:'500g'},{n:'Rahm',q:'3dl'},{n:'Vanillezucker',q:'1 Päckchen'},{n:'Meringues',q:'8 Stk'},{n:'Marroni ganz',q:'100g'}]},
+
+  // ── Neue Rezepte r129–r160 ──
+
+  // Pasta & Risotto
+  {id:'r129', name:'Penne Arrabbiata', emoji:'🌶️', tags:['pasta','vegetarisch','schnell','scharf'], kcal:410, zeit:15, pers:4, cost:5, src:'Eigenrezept',
+   ingredients:[{n:'Penne Rigate',q:'400g'},{n:'Tomaten passiert',q:'800g'},{n:'Knoblauch',q:'4 Zehen'},{n:'Peperoncini',q:'2 Stk'},{n:'Olivenöl',q:'4 EL'},{n:'Parmesan',q:'60g'},{n:'Petersilie',q:'0.5 Bund'}]},
+  {id:'r130', name:'Risotto al Barolo', emoji:'🍷', tags:['risotto','weekend','vegetarisch'], kcal:490, zeit:40, pers:4, cost:14, src:'Meinetiptopf',
+   ingredients:[{n:'Risotto-Reis Carnaroli',q:'320g'},{n:'Barolo oder Rotwein',q:'2dl'},{n:'Schalotten',q:'3 Stk'},{n:'Gemüsebouillon',q:'1.2L'},{n:'Parmesan',q:'80g'},{n:'Butter',q:'50g'},{n:'Olivenöl',q:'2 EL'}]},
+  {id:'r131', name:'Lasagne Bolognese', emoji:'🫕', tags:['pasta','weekend','fleisch','klassiker'], kcal:560, zeit:90, pers:6, cost:15, src:'Meinetiptopf',
+   ingredients:[{n:'Lasagneplatten',q:'250g'},{n:'Hackfleisch Rind',q:'500g'},{n:'Tomaten passiert',q:'800g'},{n:'Möhren',q:'2 Stk'},{n:'Sellerie',q:'2 Stangen'},{n:'Zwiebeln',q:'2 Stk'},{n:'Mozzarella',q:'250g'},{n:'Béchamelsauce (fertig)',q:'500g'},{n:'Parmesan',q:'80g'},{n:'Rotwein',q:'1dl'}]},
+  {id:'r132', name:'Gnocchi Gorgonzola', emoji:'🫙', tags:['pasta','vegetarisch','schnell'], kcal:530, zeit:15, pers:4, cost:11, src:'Eigenrezept',
+   ingredients:[{n:'Gnocchi (frisch)',q:'500g'},{n:'Gorgonzola',q:'150g'},{n:'Rahm',q:'1.5dl'},{n:'Walnüsse',q:'60g'},{n:'Schalotten',q:'2 Stk'},{n:'Butter',q:'20g'},{n:'Rucola',q:'60g'}]},
+  {id:'r133', name:'Spaghetti alle Vongole', emoji:'🦪', tags:['pasta','fisch','sommer','mediterran'], kcal:440, zeit:25, pers:4, cost:18, src:'Meinetiptopf',
+   ingredients:[{n:'Spaghetti',q:'400g'},{n:'Venusmuscheln',q:'1kg'},{n:'Knoblauch',q:'4 Zehen'},{n:'Weisswein',q:'1.5dl'},{n:'Olivenöl',q:'4 EL'},{n:'Petersilie',q:'1 Bund'},{n:'Chilliflocken',q:'1 TL'}]},
+
+  // Asiatisch
+  {id:'r134', name:'Gyoza (Japanische Teigtaschen)', emoji:'🥟', tags:['asiatisch','weekend','schwein'], kcal:380, zeit:60, pers:4, cost:12, src:'Eigenrezept',
+   ingredients:[{n:'Gyoza-Teigblätter',q:'30 Stk'},{n:'Hackfleisch Schwein',q:'300g'},{n:'Chinakohl',q:'200g'},{n:'Ingwer',q:'2cm'},{n:'Knoblauch',q:'2 Zehen'},{n:'Sojasauce',q:'2 EL'},{n:'Sesamöl',q:'1 EL'},{n:'Frühlingszwiebeln',q:'3 Stk'}]},
+  {id:'r135', name:'Bibimbap (Koreanische Reisschüssel)', emoji:'🍚', tags:['asiatisch','gesund','vegetarisch'], kcal:430, zeit:35, pers:4, cost:11, src:'Eigenrezept',
+   ingredients:[{n:'Reis',q:'300g'},{n:'Spinat',q:'200g'},{n:'Karotten',q:'2 Stk'},{n:'Zucchetti',q:'1 Stk'},{n:'Shiitake-Pilze',q:'150g'},{n:'Eier',q:'4 Stk'},{n:'Gochujang-Paste',q:'3 EL'},{n:'Sesamöl',q:'2 EL'},{n:'Sesam',q:'2 EL'}]},
+  {id:'r136', name:'Miso-Ramen', emoji:'🍜', tags:['asiatisch','suppe','winter'], kcal:450, zeit:30, pers:4, cost:12, src:'Eigenrezept',
+   ingredients:[{n:'Ramen-Nudeln',q:'320g'},{n:'Miso-Paste',q:'4 EL'},{n:'Hühnerbouillon',q:'1.2L'},{n:'Tofu fest',q:'200g'},{n:'Pak Choi',q:'300g'},{n:'Eier',q:'4 Stk'},{n:'Frühlingszwiebeln',q:'4 Stk'},{n:'Nori',q:'4 Blätter'},{n:'Sesamöl',q:'1 EL'}]},
+  {id:'r137', name:'Hoisin-Entenbrust mit Pak Choi', emoji:'🦆', tags:['asiatisch','weekend','geflügel'], kcal:510, zeit:40, pers:4, cost:22, src:'Meinetiptopf',
+   ingredients:[{n:'Entenbrustfilet',q:'600g'},{n:'Hoisin-Sauce',q:'4 EL'},{n:'Pak Choi',q:'400g'},{n:'Ingwer',q:'2cm'},{n:'Knoblauch',q:'2 Zehen'},{n:'Sesamöl',q:'1 EL'},{n:'Sojasauce',q:'2 EL'},{n:'Jasmin-Reis',q:'300g'}]},
+  {id:'r138', name:'Teriyaki-Lachs mit Edamame-Reis', emoji:'🐟', tags:['asiatisch','fisch','schnell','gesund'], kcal:460, zeit:20, pers:4, cost:20, src:'Eigenrezept',
+   ingredients:[{n:'Lachsfilet',q:'600g'},{n:'Teriyaki-Sauce',q:'4 EL'},{n:'Reis',q:'300g'},{n:'Edamame TK',q:'200g'},{n:'Sesam',q:'2 EL'},{n:'Frühlingszwiebeln',q:'3 Stk'},{n:'Ingwer',q:'1cm'}]},
+
+  // Fleisch & Grillieren
+  {id:'r139', name:'Rindsbraten mit Rotweinsosse', emoji:'🥩', tags:['fleisch','weekend','herbst','winter','klassiker'], kcal:580, zeit:150, pers:6, cost:28, src:'Meinetiptopf',
+   ingredients:[{n:'Rindsbraten (Schulter)',q:'1.2kg'},{n:'Rotwein',q:'3dl'},{n:'Rindsbouillon',q:'3dl'},{n:'Karotten',q:'3 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Sellerie',q:'2 Stangen'},{n:'Tomatenpüree',q:'2 EL'},{n:'Thymian',q:'3 Zweige'},{n:'Lorbeer',q:'2 Blätter'},{n:'Butter',q:'30g'}]},
+  {id:'r140', name:'Spare Ribs BBQ (Backofen)', emoji:'🍖', tags:['fleisch','weekend','sommer','grillieren'], kcal:640, zeit:180, pers:4, cost:20, src:'Eigenrezept',
+   ingredients:[{n:'Schweinsrippchen',q:'1.5kg'},{n:'BBQ-Sauce',q:'200g'},{n:'Paprikapulver',q:'2 TL'},{n:'Knoblauchpulver',q:'1 TL'},{n:'Brauner Zucker',q:'2 EL'},{n:'Salz',q:'1 TL'},{n:'Cayennepfeffer',q:'0.5 TL'}]},
+  {id:'r141', name:'Schweinsgeschnetzeltes Jägerart', emoji:'🍄', tags:['fleisch','schweizer','herbst','schnell'], kcal:490, zeit:25, pers:4, cost:15, src:'Eigenrezept',
+   ingredients:[{n:'Schweinsfilet',q:'600g'},{n:'Champignons',q:'400g'},{n:'Zwiebeln',q:'2 Stk'},{n:'Rahm',q:'2dl'},{n:'Weisswein',q:'1dl'},{n:'Senf',q:'1 EL'},{n:'Thymian',q:'2 Zweige'},{n:'Butter',q:'30g'},{n:'Bandnudeln',q:'400g'}]},
+  {id:'r142', name:'Hackbraten mit Spiegelei', emoji:'🥚', tags:['fleisch','klassiker','kinder','herbst'], kcal:530, zeit:70, pers:6, cost:12, src:'Eigenrezept',
+   ingredients:[{n:'Hackfleisch gemischt',q:'700g'},{n:'Eier',q:'5 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Semmelbrösel',q:'60g'},{n:'Milch',q:'3 EL'},{n:'Senf',q:'1 EL'},{n:'Thymian',q:'1 TL'},{n:'Ketchup',q:'2 EL'},{n:'Kartoffelpüree',q:'800g'}]},
+  {id:'r143', name:'Poulet im Ganzen aus dem Ofen', emoji:'🍗', tags:['poulet','weekend','klassiker','herbst'], kcal:520, zeit:90, pers:4, cost:18, src:'Eigenrezept',
+   ingredients:[{n:'Poulet ganz',q:'1.4kg'},{n:'Butter',q:'50g'},{n:'Knoblauch',q:'4 Zehen'},{n:'Rosmarin',q:'3 Zweige'},{n:'Thymian',q:'3 Zweige'},{n:'Zitrone',q:'1 Stk'},{n:'Kartoffeln',q:'800g'},{n:'Olivenöl',q:'3 EL'}]},
+
+  // Vegetarisch & Vegan (weitere)
+  {id:'r144', name:'Ratatouille', emoji:'🍆', tags:['vegetarisch','vegan','sommer','mediterran'], kcal:240, zeit:60, pers:4, cost:9, src:'Meinetiptopf',
+   ingredients:[{n:'Auberginen',q:'2 Stk'},{n:'Zucchetti',q:'3 Stk'},{n:'Peperoni',q:'2 Stk'},{n:'Tomaten',q:'4 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Olivenöl',q:'4 EL'},{n:'Thymian',q:'3 Zweige'},{n:'Basilikum',q:'0.5 Bund'}]},
+  {id:'r145', name:'Falafel mit Hummus & Fladenbrot', emoji:'🧆', tags:['vegetarisch','vegan','mediterran','kinder'], kcal:420, zeit:30, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Kichererbsen (Dose)',q:'400g'},{n:'Knoblauch',q:'3 Zehen'},{n:'Petersilie',q:'1 Bund'},{n:'Kreuzkümmel',q:'1 TL'},{n:'Korianderpulver',q:'1 TL'},{n:'Mehl',q:'3 EL'},{n:'Hummus (fertig)',q:'200g'},{n:'Fladenbrot',q:'4 Stk'},{n:'Pflanzöl',q:'5dl'}]},
+  {id:'r146', name:'Kürbis-Ricotta-Ravioli (aus Packung)', emoji:'🎃', tags:['pasta','vegetarisch','herbst','schnell'], kcal:480, zeit:15, pers:4, cost:12, src:'Eigenrezept',
+   ingredients:[{n:'Kürbis-Ricotta-Ravioli (frisch)',q:'500g'},{n:'Butter',q:'60g'},{n:'Salbei',q:'10 Blätter'},{n:'Parmesan',q:'60g'},{n:'Walnüsse',q:'40g'},{n:'Salz, Pfeffer',q:'nach Geschmack'}]},
+  {id:'r147', name:'Brokkoli-Cheddar-Suppe', emoji:'🥦', tags:['suppe','vegetarisch','schnell','kinder'], kcal:330, zeit:25, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Brokkoli',q:'600g'},{n:'Cheddar gerieben',q:'150g'},{n:'Gemüsebouillon',q:'8dl'},{n:'Kartoffeln',q:'300g'},{n:'Rahm',q:'1dl'},{n:'Zwiebeln',q:'1 Stk'},{n:'Knoblauch',q:'2 Zehen'},{n:'Muskatnuss',q:'Prise'}]},
+  {id:'r148', name:'Vegane Bolognese (Linsen)', emoji:'🍝', tags:['pasta','vegan','günstig','herbst'], kcal:410, zeit:40, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Tagliatelle',q:'400g'},{n:'Grüne Linsen',q:'250g'},{n:'Tomaten passiert',q:'800g'},{n:'Möhren',q:'2 Stk'},{n:'Sellerie',q:'2 Stangen'},{n:'Zwiebeln',q:'2 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Tomatenpüree',q:'2 EL'},{n:'Rosmarin',q:'2 Zweige'}]},
+
+  // Schweizer & Regional (weitere)
+  {id:'r149', name:'Engadiner Nusstorte', emoji:'🥜', tags:['dessert','schweizer','backen','herbst'], kcal:480, zeit:75, pers:10, cost:12, src:'Meinetiptopf',
+   ingredients:[{n:'Mürbeteig (Fertig)',q:'2 Rollen'},{n:'Walnüsse grob gehackt',q:'300g'},{n:'Rahm',q:'1dl'},{n:'Zucker',q:'200g'},{n:'Honig',q:'3 EL'},{n:'Butter',q:'30g'}]},
+  {id:'r150', name:'Berneplatte Gemüse (vegetarisch)', emoji:'🥕', tags:['schweizer','vegetarisch','herbst','winter'], kcal:380, zeit:50, pers:4, cost:9, src:'Eigenrezept',
+   ingredients:[{n:'Sauerkraut',q:'600g'},{n:'Kartoffeln',q:'600g'},{n:'Bohnen grün',q:'300g'},{n:'Karotten',q:'4 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Weisswein',q:'1dl'},{n:'Lorbeer',q:'2 Blätter'},{n:'Kümmel',q:'1 TL'}]},
+  {id:'r151', name:'Landjäger-Rösti-Pfanne', emoji:'🌭', tags:['schweizer','schnell','herbst'], kcal:510, zeit:20, pers:4, cost:10, src:'Eigenrezept',
+   ingredients:[{n:'Rösti (TK)',q:'600g'},{n:'Landjäger',q:'8 Stk'},{n:'Zwiebeln',q:'2 Stk'},{n:'Peperoni',q:'1 Stk'},{n:'Eier',q:'4 Stk'},{n:'Butter',q:'30g'},{n:'Schnittlauch',q:'0.5 Bund'}]},
+
+  // Brunch & Kinder
+  {id:'r152', name:'French Toast mit Beeren', emoji:'🍓', tags:['brunch','kinder','süss','schnell'], kcal:390, zeit:15, pers:4, cost:7, src:'Eigenrezept',
+   ingredients:[{n:'Toastbrot oder Brioche',q:'8 Scheiben'},{n:'Eier',q:'3 Stk'},{n:'Milch',q:'1dl'},{n:'Vanillezucker',q:'1 Päckchen'},{n:'Zimt',q:'1 TL'},{n:'Butter',q:'30g'},{n:'Beeren gemischt',q:'300g'},{n:'Ahornsirup',q:'4 EL'}]},
+  {id:'r153', name:'Mini-Pizzas (Kinder)', emoji:'🍕', tags:['kinder','schnell','vegetarisch','pizza'], kcal:420, zeit:20, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Pizzateig (Fertig)',q:'2 Rollen'},{n:'Tomatensauce',q:'200g'},{n:'Mozzarella gerieben',q:'250g'},{n:'Cherrytomaten',q:'200g'},{n:'Peperoni',q:'1 Stk'},{n:'Mais (Dose)',q:'100g'},{n:'Olivenöl',q:'2 EL'},{n:'Oregano',q:'1 TL'}]},
+  {id:'r154', name:'Crêpes Suzette', emoji:'🥞', tags:['brunch','dessert','kinder','schnell'], kcal:350, zeit:25, pers:4, cost:7, src:'Meinetiptopf',
+   ingredients:[{n:'Mehl',q:'200g'},{n:'Eier',q:'3 Stk'},{n:'Milch',q:'4dl'},{n:'Butter',q:'40g'},{n:'Orangensaft',q:'2dl'},{n:'Orangenzeste',q:'1 Stk'},{n:'Zucker',q:'3 EL'},{n:'Cointreau (optional)',q:'2 EL'}]},
+  {id:'r155', name:'Hot Dogs Schweizer Art', emoji:'🌭', tags:['kinder','schnell','sommer','grillieren'], kcal:450, zeit:10, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Cervelats oder Wienerli',q:'8 Stk'},{n:'Hot-Dog-Brötchen',q:'8 Stk'},{n:'Senf',q:'4 EL'},{n:'Ketchup',q:'4 EL'},{n:'Rotkrautsalat',q:'200g'},{n:'Röstzwiebeln',q:'60g'},{n:'Gurken (Cornichons)',q:'8 Stk'}]},
+
+  // Gesunde Küche
+  {id:'r156', name:'Buddha Bowl mit Quinoa', emoji:'🥣', tags:['vegetarisch','vegan','gesund','sommer'], kcal:390, zeit:25, pers:4, cost:11, src:'Eigenrezept',
+   ingredients:[{n:'Quinoa',q:'250g'},{n:'Kichererbsen (geröstet)',q:'400g'},{n:'Rote Beete',q:'300g'},{n:'Avocado',q:'2 Stk'},{n:'Babyspinat',q:'100g'},{n:'Tahin',q:'3 EL'},{n:'Zitronensaft',q:'2 EL'},{n:'Olivenöl',q:'2 EL'},{n:'Sesam',q:'1 EL'}]},
+  {id:'r157', name:'Thunfisch-Avocado-Wraps', emoji:'🌯', tags:['schnell','gesund','kinder','sommer'], kcal:380, zeit:10, pers:4, cost:9, src:'Eigenrezept',
+   ingredients:[{n:'Tortilla-Wraps',q:'8 Stk'},{n:'Thunfisch (Dose)',q:'300g'},{n:'Avocado',q:'2 Stk'},{n:'Cherrytomaten',q:'200g'},{n:'Eisbergsalat',q:'100g'},{n:'Joghurt nature',q:'3 EL'},{n:'Zitronensaft',q:'1 EL'},{n:'Chilisauce',q:'2 EL'}]},
+  {id:'r158', name:'Gebackene Süsskartoffel mit Feta', emoji:'🍠', tags:['vegetarisch','gesund','sommer','schnell'], kcal:340, zeit:50, pers:4, cost:8, src:'Eigenrezept',
+   ingredients:[{n:'Süsskartoffeln',q:'800g'},{n:'Feta',q:'150g'},{n:'Cherrytomaten',q:'200g'},{n:'Babyspinat',q:'100g'},{n:'Olivenöl',q:'2 EL'},{n:'Honig',q:'1 EL'},{n:'Chiliflocken',q:'1 TL'},{n:'Zitronensaft',q:'1 EL'}]},
+
+  // Festlich & Weekend
+  {id:'r159', name:'Beef Bourguignon', emoji:'🥩', tags:['fleisch','weekend','winter','klassiker','französisch'], kcal:620, zeit:180, pers:6, cost:26, src:'Meinetiptopf',
+   ingredients:[{n:'Rindsgulasch',q:'1.2kg'},{n:'Rotwein (Burgunder)',q:'7.5dl'},{n:'Speck gewürfelt',q:'150g'},{n:'Champignons',q:'300g'},{n:'Schalotten',q:'12 Stk'},{n:'Knoblauch',q:'3 Zehen'},{n:'Karotten',q:'3 Stk'},{n:'Tomatenpüree',q:'2 EL'},{n:'Bouquet garni',q:'1 Stk'},{n:'Mehl',q:'2 EL'},{n:'Butter',q:'30g'}]},
+  {id:'r160', name:'Lachsfilet en Croûte (Blätterteig)', emoji:'🐟', tags:['fisch','weekend','festlich'], kcal:540, zeit:45, pers:4, cost:24, src:'Meinetiptopf',
+   ingredients:[{n:'Lachsfilet (am Stück)',q:'600g'},{n:'Blätterteig',q:'1 Rolle'},{n:'Blattspinat',q:'200g'},{n:'Frischkäse',q:'100g'},{n:'Dill',q:'0.5 Bund'},{n:'Eier',q:'1 Stk'},{n:'Zitrone',q:'1 Stk'},{n:'Senf',q:'1 EL'}]},
+
+
   {id:'r68', name:'Schokoladenmousse', emoji:'🍫', tags:['dessert','vegetarisch'], kcal:380, zeit:20, pers:4, cost:8, src:'Meinetiptopf',
    ingredients:[{n:'Dunkle Schokolade 70%',q:'200g'},{n:'Eier',q:'4 Stk'},{n:'Rahm',q:'1.5dl'},{n:'Zucker',q:'2 EL'},{n:'Butter',q:'20g'},{n:'Salz',q:'Prise'}]},
   {id:'r69', name:'Tarte Tatin (Apfelkuchen)', emoji:'🥧', tags:['dessert','vegetarisch','herbst'], kcal:350, zeit:60, pers:6, cost:10, src:'Meinetiptopf',
@@ -3515,9 +3696,6 @@ function saveAllState() {
   lsSave(LS_KEYS.shoppingChecked, shoppingChecked);
   lsSave(LS_KEYS.weekOffset, currentWeekOffset);
   lsSave(LS_KEYS.userRecipes, userRecipes);
-  lsSave('fm_vorrat', vorrat);
-  // Trigger cloud sync (debounced, no recursion)
-  if (typeof syncAfterSave === 'function') syncAfterSave();
 }
 
 function loadAllState() {
@@ -3531,8 +3709,6 @@ function loadAllState() {
   shoppingChecked = lsLoad(LS_KEYS.shoppingChecked, {});
   currentWeekOffset = lsLoad(LS_KEYS.weekOffset, 0);
   userRecipes = lsLoad(LS_KEYS.userRecipes, []);
-  vorrat = lsLoad('fm_vorrat', []);
-  basisHave = lsLoad('fm_basis', {});
 }
 
 // =====================================================
@@ -4092,14 +4268,14 @@ function addVorrat(name, qty, emoji, barcode) {
     addedDate: new Date().toLocaleDateString('de-CH')
   });
   if (inputEl) inputEl.value = '';
-  saveAllState();
+  lsSave('fm_vorrat', vorrat);
   renderVorratList();
   showToast(n + ' zum Vorrat hinzugefügt');
 }
 
 function removeVorrat(id) {
   vorrat = vorrat.filter(v => v.id !== id);
-  saveAllState();
+  lsSave('fm_vorrat', vorrat);
   renderVorratList();
 }
 
@@ -4178,6 +4354,10 @@ async function startCamera() {
 
 function stopCamera() {
   clearInterval(scannerInterval);
+  // Stop @zxing/browser continuous reader if active
+  if (_zxingReader) {
+    try { _zxingReader.reset(); } catch(e) {}
+  }
   if (scannerStream) {
     scannerStream.getTracks().forEach(t => t.stop());
     scannerStream = null;
@@ -4200,34 +4380,90 @@ async function detectBarcodeNative() {
   } catch(e) {}
 }
 
+// ── ZXing-Browser (ESM-UMD build, works on iOS Safari) ──────────────────────
+let _zxingReader = null;
+
 function loadZXing() {
-  if (window.ZXing) { initZXing(); return; }
+  if (_zxingReader) { startZXingLoop(); return; }
+  const hintEl = document.getElementById('scannerHint');
+  hintEl.textContent = '⏳ Lade Scanner-Bibliothek…';
+
+  // Use the UMD build of @zxing/browser — works in Safari/iOS without ES modules
+  const s = document.createElement('script');
+  s.src = 'https://unpkg.com/@zxing/browser@0.1.5/umd/index.min.js';
+  s.onload = () => {
+    try {
+      // @zxing/browser exposes ZXingBrowser global
+      const hints = new Map();
+      // BarcodeFormat constants are on ZXingBrowser.BarcodeFormat (re-exported from @zxing/library)
+      const BF = ZXingBrowser && ZXingBrowser.BarcodeFormat;
+      if (BF) {
+        hints.set(2, [BF.EAN_13, BF.EAN_8, BF.CODE_128, BF.UPC_A, BF.UPC_E]);
+      }
+      _zxingReader = new ZXingBrowser.BrowserMultiFormatReader(hints, { delayBetweenScanAttempts: 200 });
+      startZXingLoop();
+    } catch(e) {
+      // Fallback: canvas-based polling with the lighter library
+      loadZXingLegacy();
+    }
+  };
+  s.onerror = loadZXingLegacy;
+  document.head.appendChild(s);
+}
+
+function startZXingLoop() {
+  const video = document.getElementById('scannerVideo');
+  const hintEl = document.getElementById('scannerHint');
+  if (!_zxingReader || !video) return;
+  hintEl.textContent = '📷 Scanner aktiv — Barcode einrahmen';
+
+  // decodeFromVideoElement continuously fires callbacks — perfect for iOS
+  _zxingReader.decodeFromVideoElement(video, (result, err) => {
+    if (result && result.getText() !== lastScannedCode) {
+      lastScannedCode = result.getText();
+      if (navigator.vibrate) navigator.vibrate(80);
+      // Stop continuous scan, process result
+      try { _zxingReader.reset(); } catch(e2) {}
+      onBarcodeDetected(lastScannedCode);
+    }
+    // NotFoundException is thrown on every empty frame — suppress it
+  }).catch(() => {
+    hintEl.textContent = '⚠️ Kamera-Zugriff fehlgeschlagen — manuell eingeben';
+  });
+}
+
+// ── Legacy canvas-polling fallback (old zxing-js UMD) ───────────────────────
+function loadZXingLegacy() {
+  if (window.ZXing) { initZXingLegacy(); return; }
   const s = document.createElement('script');
   s.src = 'https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.18.6/zxing.min.js';
-  s.onload = initZXing;
+  s.onload = initZXingLegacy;
   s.onerror = () => {
-    document.getElementById('scannerHint').textContent = '⚠️ Automatik nicht verfügbar — bitte manuell suchen';
+    document.getElementById('scannerHint').textContent = '⚠️ Scanner nicht verfügbar — bitte manuell eingeben';
   };
   document.head.appendChild(s);
 }
 
-function initZXing() {
+function initZXingLegacy() {
   try {
     const hints = new Map();
     const formats = [ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.CODE_128];
     hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
     const reader = new ZXing.MultiFormatReader();
     reader.setHints(hints);
-    document.getElementById('scannerHint').textContent = 'ZXing aktiv — halte Barcode ruhig';
+
+    // Reuse a single offscreen canvas for iOS performance
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    document.getElementById('scannerHint').textContent = '📷 Scanner aktiv — Barcode ruhig halten';
+
     scannerInterval = setInterval(() => {
       const video = document.getElementById('scannerVideo');
-      if (!video || video.readyState < 2) return;
+      if (!video || video.readyState < 2 || video.videoWidth === 0) return;
       try {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0);
+        if (canvas.width !== video.videoWidth) canvas.width = video.videoWidth;
+        if (canvas.height !== video.videoHeight) canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const lum = new ZXing.RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
         const bmp = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum));
@@ -4235,10 +4471,11 @@ function initZXing() {
         if (result && result.text !== lastScannedCode) {
           lastScannedCode = result.text;
           clearInterval(scannerInterval);
+          if (navigator.vibrate) navigator.vibrate(80);
           onBarcodeDetected(result.text);
         }
-      } catch(e) {}
-    }, 400);
+      } catch(e) { /* NotFoundException expected on empty frames */ }
+    }, 350);
   } catch(e) {
     document.getElementById('scannerHint').textContent = 'Manuelle Eingabe verfügbar';
   }
@@ -4355,8 +4592,10 @@ function renderScanActions(name, qty, emoji, barcode) {
     // Restart scanning
     if ('BarcodeDetector' in window && scannerDetector) {
       scannerInterval = setInterval(detectBarcodeNative, 300);
+    } else if (_zxingReader) {
+      startZXingLoop();
     } else if (window.ZXing) {
-      initZXing();
+      initZXingLegacy();
     }
     document.getElementById('scannerHint').textContent = 'Halte den nächsten Barcode in den Rahmen';
   };
@@ -4429,203 +4668,71 @@ async function scanManualSearch() {
 // =====================================================
 // SUPABASE CONFIG
 // =====================================================
-// =====================================================
-// API KEY
-// =====================================================
-let savedApiKey = lsLoad('fm_apikey', '');
-
-function saveApiKey() {
-  const key = document.getElementById('settApiKey').value.trim();
-  if (!key) { showToast('Bitte API Key eingeben'); return; }
-  savedApiKey = key;
-  lsSave('fm_apikey', key);
-  document.getElementById('settApiKey').value = '';
-  const statusEl = document.getElementById('apiKeyStatus');
-  if (statusEl) { statusEl.textContent = '✅ API Key gespeichert'; statusEl.style.color = 'var(--green)'; }
-  showToast('API Key gespeichert ✓');
-}
-
-function getApiKey() {
-  return savedApiKey || '';
-}
-
 const SUPABASE_URL = 'https://tazphkvsdfqcneogeqhm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_njt7sJhM2zrGdcp22G1lGQ_hgWUwdOz';
 
 let familyCode = '';
+let supabaseClient = null;
 let syncChannel = null;
 let isSyncing = false;
-let lastPushTime = {}; // {key: timestamp} — when WE last pushed this key
+let syncLastPush = 0; // timestamp of our last push
 
-// =====================================================
-// SUPABASE HELPERS
-// =====================================================
-async function sbGet(filter) {
-  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state?' + filter, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Accept': 'application/json'
-    }
-  });
-  if (!r.ok) {
-    const txt = await r.text();
-    console.warn('sbGet error:', txt);
-    throw new Error(txt);
+// Simple Supabase REST client (no SDK needed)
+const sb = {
+  async get(table, filter) {
+    const params = filter ? '?' + filter : '';
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + params, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  },
+  async upsert(table, data) {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error(await r.text());
+    return r.status === 204 ? {} : r.json();
+  },
+  subscribe(table, familyCode, callback) {
+    // Poll every 3 seconds for changes from OTHER devices
+    return setInterval(async () => {
+      if (isSyncing) return;
+      try {
+        // Only look for rows updated after our last push + 2 second buffer
+        const since = new Date(syncLastPush + 2000).toISOString();
+        const rows = await sb.get(table,
+          'family_code=eq.' + encodeURIComponent(familyCode) +
+          '&updated_at=gt.' + encodeURIComponent(since) +
+          '&order=updated_at.desc'
+        );
+        if (rows && rows.length > 0) {
+          rows.forEach(r => callback(r));
+          flashSyncDot('var(--blue)'); // silent indicator
+        }
+      } catch(e) {}
+    }, 3000);
   }
-  return r.json();
-}
-
-async function sbPush(key, value, ts) {
-  if (!familyCode) return;
-  const updated_at = ts || new Date().toISOString();
-
-  // Use PATCH (update) if row exists, POST (insert) if not
-  // Simpler: DELETE + INSERT approach via upsert with correct headers
-  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_state?family_code=eq.' + familyCode + '&key=eq.' + key, {
-    method: 'DELETE',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY
-    }
-  });
-
-  const r2 = await fetch(SUPABASE_URL + '/rest/v1/fm_state', {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({
-      family_code: familyCode,
-      key: key,
-      value: value,
-      updated_at: updated_at
-    })
-  });
-
-  if (r2.ok) {
-    lastPushTime[key] = Date.now();
-  } else {
-    const err = await r2.text();
-    throw new Error(err);
-  }
-}
-
-async function sbCreateFamily(code) {
-  // Check if exists first, insert only if not
-  const existing = await fetch(SUPABASE_URL + '/rest/v1/fm_families?code=eq.' + code, {
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
-  });
-  const rows = await existing.json();
-  if (rows && rows.length > 0) return; // Already exists — OK
-
-  await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({ code, name: 'Familie ' + code })
-  });
-}
+};
 
 // =====================================================
-// LOAD FROM SUPABASE — always called on start
-// =====================================================
-async function loadFromSupabase(code) {
-  const rows = await sbGet('family_code=eq.' + encodeURIComponent(code) + '&order=updated_at.desc');
-  if (!rows || rows.length === 0) return false;
-  rows.forEach(row => applyRow(row.key, row.value));
-  return true;
-}
-
-function applyRow(key, value) {
-  switch(key) {
-    case 'persons':
-      persons = value;
-      lsSave('fm_persons', persons);
-      renderPersons(); renderWeek();
-      break;
-    case 'weekplan':
-      weekPlan = value;
-      lsSave('fm_weekplan', weekPlan);
-      renderWeek(); generateShoppingList(); renderLaden();
-      break;
-    case 'snackplan':
-      snackPlan = value; lsSave('fm_snackplan', snackPlan); break;
-    case 'mealpersons':
-      mealPersons = value; lsSave('fm_mealpersons', mealPersons); break;
-    case 'aktionen':
-      aktionen = value; lsSave('fm_aktionen', aktionen); renderAktionen(); break;
-    case 'settings':
-      settings = {...settings, ...value}; lsSave('fm_settings', settings); break;
-    case 'shopchecked':
-      shoppingChecked = value; lsSave('fm_shopchecked', shoppingChecked);
-      renderShoppingList(); renderLaden(); break;
-    case 'weekoffset':
-      currentWeekOffset = value; lsSave('fm_weekoffset', currentWeekOffset); renderWeek(); break;
-    case 'userrecipes':
-      userRecipes = value; lsSave('fm_userrecipes', userRecipes); renderRecipes(); break;
-    case 'vorrat':
-      vorrat = value; lsSave('fm_vorrat', vorrat); break;
-  }
-}
-
-// =====================================================
-// PUSH ALL STATE
-// =====================================================
-async function pushAll() {
-  if (!familyCode || isSyncing) return;
-  isSyncing = true;
-  const items = {
-    persons, weekplan: weekPlan, snackplan: snackPlan,
-    mealpersons: mealPersons, aktionen, settings,
-    shopchecked: shoppingChecked, weekoffset: currentWeekOffset,
-    userrecipes: userRecipes, vorrat
-  };
-  const now = new Date().toISOString();
-  console.log('Pushing all keys to Supabase at', now);
-  for (const [key, value] of Object.entries(items)) {
-    try {
-      await sbPush(key, value, now);
-      console.log('Pushed:', key);
-    } catch(e) { console.warn('Push failed:', key, e.message); }
-  }
-  isSyncing = false;
-  flashSyncDot('var(--green)');
-}
-
-// Push single key — debounced
-const _pushDebounce = {};
-function pushKey(key) {
-  if (!familyCode) return;
-  clearTimeout(_pushDebounce[key]);
-  _pushDebounce[key] = setTimeout(async () => {
-    const items = {
-      persons, weekplan: weekPlan, snackplan: snackPlan,
-      mealpersons: mealPersons, aktionen, settings,
-      shopchecked: shoppingChecked, weekoffset: currentWeekOffset,
-      userrecipes: userRecipes, vorrat
-    };
-    try {
-      await sbPush(key, items[key]);
-      flashSyncDot('var(--green)');
-    } catch(e) { flashSyncDot('var(--red)'); }
-  }, 800);
-}
-
-// =====================================================
-// CONNECT FAMILY
+// FAMILY SYNC
 // =====================================================
 async function connectFamily() {
   const el = document.getElementById('settFamilyCode');
-  const code = (el ? el.value : '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (code.length < 4) { showToast('Mindestens 4 Zeichen'); return; }
+  const code = (el ? el.value : '').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if (code.length < 4) { showToast('Mindestens 4 Zeichen (Buchstaben/Zahlen)'); return; }
 
   familyCode = code;
   lsSave('fm_family_code', code);
@@ -4633,110 +4740,187 @@ async function connectFamily() {
   setSyncStatus('connecting');
 
   try {
-    await sbCreateFamily(code);
-    const hasData = await loadFromSupabase(code);
-    // Always push current state to cloud after connecting
-    await pushAll();
-    if (!hasData) {
-      showToast('✅ Neue Familie ' + code + ' erstellt');
+    // INSERT OR IGNORE family (use on_conflict=ignore to avoid 409)
+    await sbInsertFamily(code);
+
+    // Check if family already has data in cloud
+    const existing = await sb.get('fm_state', 'family_code=eq.' + code);
+
+    if (existing && existing.length > 0) {
+      // Family exists in cloud — pull only, never overwrite cloud with local
+      await pullFromSupabase();
+      showToast('✅ Daten von Familie ' + code + ' geladen');
     } else {
-      showToast('✅ Familie ' + code + ' verbunden & synchronisiert');
+      // Brand new family — push local as starting point
+      await pushAllToSupabase();
+      showToast('✅ Neue Familie erstellt: ' + code);
     }
+
     setSyncStatus('connected');
-    startPolling();
+
+    // Start polling for realtime changes
+    if (syncChannel) clearInterval(syncChannel);
+    syncChannel = sb.subscribe('fm_state', code, (row) => {
+      if (!isSyncing) applySupabaseRow(row);
+    });
+
   } catch(e) {
     setSyncStatus('error');
+    console.error('Sync error:', e);
     showToast('❌ Fehler: ' + e.message);
   }
 }
 
-// =====================================================
-// POLLING — check for changes every 5 seconds
-// =====================================================
-function startPolling() {
-  if (syncChannel) clearInterval(syncChannel);
-  let lastCheck = Date.now() - 60000; // start from 60s ago to catch recent changes
-
-  syncChannel = setInterval(async () => {
-    if (!familyCode || isSyncing) return;
-    try {
-      // ISO date without encodeURIComponent — Supabase needs raw date
-      const since = new Date(lastCheck).toISOString();
-      const url = 'family_code=eq.' + familyCode +
-        '&updated_at=gt.' + since +
-        '&order=updated_at.asc';
-      const rows = await sbGet(url);
-
-      if (rows && rows.length > 0) {
-        rows.forEach(row => {
-          // Skip rows we just pushed (within 4 seconds)
-          const ourPush = lastPushTime[row.key] || 0;
-          const cloudTime = new Date(row.updated_at).getTime();
-          if (cloudTime > ourPush + 4000) {
-            applyRow(row.key, row.value);
-            flashSyncDot('var(--blue)');
-            console.log('Sync received:', row.key, 'from cloud');
-          }
-        });
-        // Move lastCheck to newest row time
-        const newest = rows[rows.length - 1];
-        lastCheck = new Date(newest.updated_at).getTime() + 1;
-      } else {
-        // No new rows — advance lastCheck slowly
-        lastCheck = Date.now() - 2000;
-      }
-    } catch(e) { console.warn('Poll error:', e.message); }
-  }, 4000);
+async function sbInsertFamily(code) {
+  // Use INSERT with on_conflict=ignore to avoid 409
+  const r = await fetch(SUPABASE_URL + '/rest/v1/fm_families', {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=ignore-duplicates'
+    },
+    body: JSON.stringify({ code, name: 'Familie ' + code })
+  });
+  // 200, 201, 409 all OK here
+  return r;
 }
 
-// syncAfterSave — called explicitly after state changes
-function syncAfterSave() {
-  if (!familyCode || isSyncing) return;
-  clearTimeout(syncAfterSave._t);
-  syncAfterSave._t = setTimeout(() => pushAll(), 1000);
-}
-
-// =====================================================
-// SYNC STATUS UI
-// =====================================================
 function setSyncStatus(state) {
   const dot = document.getElementById('syncDot');
   const text = document.getElementById('syncStatusText');
-  const cfg = {
-    connected:  { color: 'var(--green)',  msg: '✅ Verbunden · Code: ' + familyCode },
-    connecting: { color: 'var(--yellow)', msg: '⏳ Verbinde...' },
-    error:      { color: 'var(--red)',    msg: '❌ Verbindungsfehler' },
-    offline:    { color: 'var(--border)', msg: 'Nicht verbunden — nur lokal' }
+  if (!dot || !text) return; // Not on settings tab yet - OK
+  const states = {
+    connected:   { color: 'var(--green)',  msg: '✅ Verbunden · Familien-Code: ' + familyCode },
+    connecting:  { color: 'var(--yellow)', msg: '⏳ Verbinde...' },
+    syncing:     { color: 'var(--yellow)', msg: '🔄 Synchronisiere...' },
+    error:       { color: 'var(--red)',    msg: '❌ Verbindungsfehler' },
+    offline:     { color: 'var(--border)', msg: 'Nicht verbunden — Daten nur lokal' }
   };
-  const s = cfg[state] || cfg.offline;
-  if (dot) dot.style.background = s.color;
-  if (text) text.textContent = s.msg;
+  const s = states[state] || states.offline;
+  dot.style.background = s.color;
+  text.textContent = s.msg;
+  // Also update header indicator
   const hDot = document.getElementById('syncDotHeader');
   const hLabel = document.getElementById('syncLabelHeader');
   if (hDot) hDot.style.background = s.color;
   if (hLabel) hLabel.textContent = state === 'connected' ? familyCode : state === 'connecting' ? '...' : 'offline';
 }
 
-function flashSyncDot(color) {
-  const dot = document.getElementById('syncDotHeader');
-  if (!dot) return;
-  const prev = dot.style.background;
-  dot.style.background = color;
-  setTimeout(() => { dot.style.background = prev; }, 600);
+async function pushAllToSupabase() {
+  if (!familyCode) return;
+  isSyncing = true;
+  const keys = [
+    ['persons', persons],
+    ['weekplan', weekPlan],
+    ['snackplan', snackPlan],
+    ['mealpersons', mealPersons],
+    ['aktionen', aktionen],
+    ['settings', settings],
+    ['shopchecked', shoppingChecked],
+    ['weekoffset', currentWeekOffset],
+    ['userrecipes', userRecipes],
+    ['vorrat', vorrat],
+  ];
+  for (const [key, val] of keys) {
+    try {
+      await sb.upsert('fm_state', {
+        family_code: familyCode,
+        key,
+        value: val,
+        updated_at: new Date().toISOString()
+      });
+    } catch(e) { console.warn('Push failed for key:', key, e.message); }
+  }
+  isSyncing = false;
+  syncLastPush = Date.now();
 }
 
-async function manualSync() {
-  if (!familyCode) { showToast('Kein Familien-Code'); return; }
-  flashSyncDot('var(--yellow)');
-  try {
-    await loadFromSupabase(familyCode);
-    flashSyncDot('var(--green)');
-    showToast('🔄 Synchronisiert');
-  } catch(e) {
-    flashSyncDot('var(--red)');
+async function pullFromSupabase() {
+  if (!familyCode) return;
+  const rows = await sb.get('fm_state', 'family_code=eq.' + familyCode);
+  if (!rows || rows.length === 0) return;
+  rows.forEach(r => applySupabaseRow(r));
+  // Re-render after full pull
+  renderWeek();
+  generateShoppingList();
+  renderLaden();
+  renderPersons();
+  renderAktionen();
+  renderRecipes();
+  renderBasis();
+  showToast('🔄 Daten synchronisiert');
+}
+
+function applySupabaseRow(row) {
+  // Only apply if this row is newer than our last push
+  // This prevents our own pushed data from bouncing back
+  const rowTime = new Date(row.updated_at).getTime();
+  if (rowTime <= syncLastPush && syncLastPush > 0) return;
+
+  switch(row.key) {
+    case 'persons':
+      persons = row.value;
+      lsSave('fm_persons', persons);
+      renderPersons();
+      renderWeek();
+      break;
+    case 'weekplan':
+      weekPlan = row.value;
+      lsSave('fm_weekplan', weekPlan);
+      renderWeek();
+      generateShoppingList();
+      renderLaden();
+      break;
+    case 'snackplan':    snackPlan = row.value; lsSave('fm_snackplan', snackPlan); break;
+    case 'mealpersons':  mealPersons = row.value; lsSave('fm_mealpersons', mealPersons); break;
+    case 'aktionen':     aktionen = row.value; lsSave('fm_aktionen', aktionen); renderAktionen(); break;
+    case 'settings':     settings = {...settings, ...row.value}; lsSave('fm_settings', settings); break;
+    case 'shopchecked':  shoppingChecked = row.value; lsSave('fm_shopchecked', shoppingChecked); renderShoppingList(); renderLaden(); break;
+    case 'weekoffset':   currentWeekOffset = row.value; lsSave('fm_weekoffset', currentWeekOffset); renderWeek(); break;
+    case 'userrecipes':  userRecipes = row.value; lsSave('fm_userrecipes', userRecipes); renderRecipes(); break;
+    case 'vorrat':       vorrat = row.value; lsSave('fm_vorrat', vorrat); break;
   }
 }
 
+// Override saveAllState to also sync to Supabase
+const _origSaveAllState = saveAllState;
+function saveAllState() {
+  _origSaveAllState();
+  if (familyCode && !isSyncing) {
+    // Push silently — only flash dot, no status text change
+    pushAllToSupabase()
+      .then(() => flashSyncDot('var(--green)'))
+      .catch(() => flashSyncDot('var(--red)'));
+  }
+}
+
+function flashSyncDot(color) {
+  const dot = document.getElementById('syncDotHeader');
+  if (!dot) return;
+  const orig = dot.style.background;
+  dot.style.background = color;
+  setTimeout(() => { dot.style.background = orig; }, 600);
+}
+
+// Manual sync — pull latest from cloud
+async function manualSync() {
+  if (!familyCode) {
+    showToast('Kein Familien-Code — Einstellungen öffnen');
+    return;
+  }
+  const dot = document.getElementById('syncDotHeader');
+  if (dot) dot.style.background = 'var(--yellow)';
+  try {
+    await pullFromSupabase();
+    if (dot) dot.style.background = 'var(--green)';
+    showToast('🔄 Synchronisiert');
+  } catch(e) {
+    if (dot) dot.style.background = 'var(--red)';
+    showToast('❌ Sync fehlgeschlagen');
+  }
+}
 
 // =====================================================
 // PWA SERVICE WORKER REGISTRATION
@@ -4768,30 +4952,33 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Show loading screen while Supabase loads
-function showLoader(msg) {
-  let el = document.getElementById('appLoader');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'appLoader';
-    el.style.cssText = 'position:fixed;inset:0;background:var(--text);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:DM Sans,sans-serif';
-    el.innerHTML = '<div style="font-family:DM Serif Display,serif;font-size:28px;margin-bottom:12px">🍽️ FamilyMeal</div><div id="loaderMsg" style="font-size:14px;opacity:0.7"></div>';
-    document.body.appendChild(el);
-  }
-  document.getElementById('loaderMsg').textContent = msg || 'Laden...';
-}
-function hideLoader() {
-  const el = document.getElementById('appLoader');
-  if (el) { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }
-}
-
-async function init() {
-  showLoader('Daten laden...');
-
-  // 1. Load from localStorage as immediate fallback
+function init() {
+  // Load persisted state
   loadAllState();
 
-  // 2. Apply settings to UI
+  // Restore family code and reconnect
+  const savedCode = lsLoad('fm_family_code', '');
+  if (savedCode) {
+    familyCode = savedCode;
+    const el = document.getElementById('settFamilyCode');
+    if (el) el.value = savedCode;
+    setSyncStatus('connecting');
+    // Auto reconnect
+    sbInsertFamily(savedCode)
+      .then(() => pullFromSupabase())
+      .then(() => {
+        setSyncStatus('connected');
+        if (syncChannel) clearInterval(syncChannel);
+        syncChannel = sb.subscribe('fm_state', savedCode, (row) => {
+          if (!isSyncing) applySupabaseRow(row);
+        });
+      })
+      .catch(() => setSyncStatus('offline'));
+  } else {
+    setSyncStatus('offline');
+  }
+
+  // Apply saved settings to UI controls
   document.getElementById('settBudget').value = settings.budget;
   document.getElementById('settGuestBudget').value = settings.guestBudget;
   document.getElementById('settAlcBudget').value = settings.alcBudget;
@@ -4809,53 +4996,24 @@ async function init() {
     });
   }
 
-  // 3. If family code exists — load from Supabase FIRST, then render
-  const savedCode = lsLoad('fm_family_code', '');
-  if (savedCode) {
-    familyCode = savedCode;
-    const el = document.getElementById('settFamilyCode');
-    if (el) el.value = savedCode;
-    setSyncStatus('connecting');
-    showLoader('Synchronisiere mit Familie ' + savedCode + '...');
-    try {
-      await loadFromSupabase(savedCode);
-      setSyncStatus('connected');
-      startPolling();
-    } catch(e) {
-      setSyncStatus('offline');
-      showToast('Offline — lokale Daten werden angezeigt');
-    }
-  } else {
-    setSyncStatus('offline');
-  }
-
-  // 4. Render everything with final data
+  // Render all views
   renderWeek();
   renderRecipes();
   renderPersons();
   renderAktionen();
+
+  // Rebuild shopping list from saved plan
   generateShoppingList();
   renderLaden();
-  renderBasis();
 
-  // 5. Hide loader
-  hideLoader();
-
-  // 6. Event listeners
+  // Close modals on overlay click
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
+  // Close scanner on Escape
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScanner(); });
-
-  // 7. Restore API key indicator
-  if (savedApiKey) {
-    const statusEl = document.getElementById('apiKeyStatus');
-    if (statusEl) { statusEl.textContent = '✅ API Key gespeichert'; statusEl.style.color = 'var(--green)'; }
-  }
-  // Restore Basis state
-  renderBasis();
 }
 
 init();
